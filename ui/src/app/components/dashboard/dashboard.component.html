@@ -1,0 +1,17 @@
+<div class="container-fluid">
+  <div class="row">
+    <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+      <div class="sidebar-sticky">
+        <ul class="nav flex-column">
+          <li class="nav-item"  
+          *ngFor="let item of navItems; let i = index"  >
+            <a class="nav-link" (click)="selectedItem = i" [ngClass]="{'active': selectedItem == i}"> 
+              <!-- href="item.path" -->
+              {{item.name}}
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </div>
+</div>
