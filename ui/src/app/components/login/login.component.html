@@ -1,0 +1,42 @@
+<div class="container">
+
+    <div class="row">
+        <div class="col-3"></div>
+        <div class="col-6">
+          <div class="list-group list-group-horizontal" id="list-tab" role="tablist">
+            <div *ngFor="let tab of tabList" 
+                (click)="tabChange(tab.id)"
+                class="list-group-item list-group-item-action"
+                [ngClass]="{'active': tabSelected==tab.id}">{{tab.title}}</div>
+          </div>
+          <div>
+            
+              <form class="form-signin" [formGroup]="loginForm">
+                
+                <div class="alert alert-danger alert-dismissible fade show" *ngIf="valid">
+                    <sup>*</sup>{{validateMsg}}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="toggle(false,'')">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                 </div>
+
+                <div *ngIf="tabSelected==1">
+                    <select class="dropdown-menu" class="form-control sub" (change)="changeStore($event)" formControlName="store">
+                        <option value="">请选择登录门店</option>
+                        <option *ngFor="let store of stores | keyvalue" class="dropdown-item" [value]="store.key" >{{store.value}}</option>
+                    </select>
+                </div>
+
+                <input type="username" formControlName="admin_name" class="form-control sub" placeholder="用户名" required="" autofocus="">
+                
+                <input type="password" formControlName="password" class="form-control sub" placeholder="密码" required="">
+
+                
+                <button class="btn btn-lg btn-primary btn-block sub" type="submit" (click)="login()">登 录</button>
+                <!-- <p class="mt-5 mb-3 text-muted">© 2017-2020</p> -->
+              </form>
+          </div>
+        </div>
+    </div>
+</div>
+

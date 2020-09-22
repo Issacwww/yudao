@@ -1,0 +1,13 @@
+-- INSERT INTO yudao.store (store_name, address, phone)
+-- VALUES (
+--     '旗舰店',
+--     '中国云南省香格里拉人民东路1号',
+--     '1235324994'
+--   );
+
+-- INSERT INTO yudao.store (store_name, address, phone)
+-- VALUES (
+--     '二号店',
+--     '中国云南省香格里拉解放西路9号',
+--     '19935324994'
+--   );
