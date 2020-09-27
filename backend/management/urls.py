@@ -9,4 +9,9 @@ urlpatterns = [
 
 router = DefaultRouter()
 router.register(r'stores', views.StoreInfoModelViewSet, basename="stores")
+router.register(r'members', views.MemberInfoModelViewSet, basename="members")
+router.register(r'services', views.ServiceInfoModelViewSet, basename="services")
+router.register(r'crew', views.CrewInfoModelViewSet, basename="crew")
+router.register(r'rooms', views.MemberInfoModelViewSet, basename="rooms")
+router.register(r'spending', views.SpendingInfoModelViewSet, basename="spending")
 urlpatterns += router.urls

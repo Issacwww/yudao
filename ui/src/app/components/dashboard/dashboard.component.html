@@ -1,17 +1,27 @@
-<div class="container-fluid">
-  <div class="row">
-    <nav class="col-md-2 d-none d-md-block bg-light sidebar">
-      <div class="sidebar-sticky">
-        <ul class="nav flex-column">
-          <li class="nav-item"  
-          *ngFor="let item of navItems; let i = index"  >
-            <a class="nav-link" (click)="selectedItem = i" [ngClass]="{'active': selectedItem == i}"> 
-              <!-- href="item.path" -->
-              {{item.name}}
-            </a>
-          </li>
-        </ul>
-      </div>
-    </nav>
-  </div>
-</div>
+<mat-sidenav-container class="fullScreen">
+  <mat-sidenav #sidenav mode="push" >
+    
+    <mat-nav-list>
+      <a mat-list-item  
+      *ngFor="let link of navItems; let i = index" 
+      (click)="changeTab(i); sidenav.toggle()" [hidden]="i==0"> 
+      {{ link.name }} </a>
+   </mat-nav-list>
+  </mat-sidenav>
+
+  <mat-sidenav-content class="fullScreen">
+    <mat-toolbar color="primary">
+      <button mat-icon-button class="example-icon" (click)="sidenav.toggle()" aria-label="Example icon-button with menu icon">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <span> &nbsp; </span>
+      <span>{{navItems[selectedItem].name}}</span>
+      <span class="spacer"></span>
+      <button mat-icon-button class="example-icon" >
+        <mat-icon>logout</mat-icon>
+      </button>
+     
+    </mat-toolbar>
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>

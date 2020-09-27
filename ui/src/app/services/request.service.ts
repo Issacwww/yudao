@@ -14,7 +14,15 @@ export class RequestService {
   }
 
   basePost(path, data): Observable<any>{
+    data['responseType'] = 'json';
     console.log(data);
     return this.http.post(this.baseAPI + path, data);
+  }
+
+  basePatch(path, data):Observable<any>{
+    data['responseType'] = 'json';
+    console.log(data);
+    console.log(path);
+    return this.http.patch(this.baseAPI + path, data);
   }
 }

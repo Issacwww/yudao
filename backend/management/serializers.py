@@ -57,3 +57,33 @@ class CredentialInfoSerializer(serializers.ModelSerializer):
         if not credential:
             raise ValidationError('该用户缺少该门店权限')
         return attrs
+
+
+class MemberInfoModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MemberInfo
+        fields = "__all__"
+
+
+class CrewInfoModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CrewInfo
+        fields = "__all__"
+
+
+class ServiceInfoModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ServiceInfo
+        fields = "__all__"
+
+
+class RoomInfoModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RoomInfo
+        fields = "__all__"
+
+
+class SpendingInfoModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SpendingInfo
+        fields = "__all__"

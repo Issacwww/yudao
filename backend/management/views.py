@@ -29,3 +29,28 @@ class LoginView(APIView):
             else:
                 return Response(credential_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         return Response(admin_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class MemberInfoModelViewSet(ModelViewSet):
+    serializer_class = MemberInfoModelSerializer
+    queryset = MemberInfo.objects.all()
+
+
+class ServiceInfoModelViewSet(ModelViewSet):
+    serializer_class = ServiceInfoModelSerializer
+    queryset = ServiceInfo.objects.all()
+
+
+class CrewInfoModelViewSet(ModelViewSet):
+    serializer_class = CrewInfoModelSerializer
+    queryset = CrewInfo.objects.all()
+
+
+class SpendingInfoModelViewSet(ModelViewSet):
+    serializer_class = SpendingInfoModelSerializer
+    queryset = SpendingInfo.objects.all()
+
+
+class RoomInfoModelViewSet(ModelViewSet):
+    serializer_class = RoomInfoModelSerializer
+    queryset = RoomInfo.objects.all()

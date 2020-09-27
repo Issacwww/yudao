@@ -1,0 +1,91 @@
+<ng-template #addNewMemberTemplate>
+  <mat-dialog-content [formGroup]="form">
+    <p>
+      <mat-form-field>
+        <mat-label>姓名</mat-label>
+        <input matInput placeholder="姓名" name="name" formControlName="name">
+      </mat-form-field>
+    </p>
+    <p>
+      <mat-radio-group formControlName="gender" [readonly]="!mode" [disabled]="!mode">
+        <mat-radio-button 
+          *ngFor="let gender of genders" 
+          name="gender" 
+          [value]="gender.value" >
+          {{gender.label}}
+        </mat-radio-button>
+      </mat-radio-group>
+    </p>
+    <p>
+      <mat-form-field>
+        <mat-label>联系方式</mat-label>
+        <input matInput placeholder="联系方式" name="phone" formControlName="phone">
+      </mat-form-field>
+    </p>
+    <p>
+      <mat-form-field>
+        <mat-label>会员卡号</mat-label>
+        <input matInput placeholder="会员卡号" name="card_number" formControlName="card_number" [readonly]="!mode">
+      </mat-form-field>
+    </p>
+    <p>
+      <mat-form-field>
+        <mat-label *ngIf="mode">充值金额</mat-label>
+        <mat-label *ngIf="!mode">当前余额</mat-label>
+        <input matInput placeholder="充值金额" name="balance" formControlName="balance" [readonly]="!mode">
+      </mat-form-field>
+    </p>
+    
+  </mat-dialog-content>
+
+  <mat-dialog-actions>
+      <button mat-raised-button class="btn btn-lg btn-block" (click)="close()">关闭</button>
+      <button mat-raised-button class="btn btn-lg btn-block" color="primary"(click)="save()">保存</button>
+  </mat-dialog-actions>
+  
+</ng-template>
+
+<div class="main container table-responsive">
+    <br>  
+    <mat-toolbar>
+        <span class="count">当前共有{{members.length}}位会员</span>
+        <span class="spacer"></span>
+        <button class="btn btn-outline-primary" type="button" (click)="insertMember()">新增会员</button>
+   
+      </mat-toolbar >
+    
+    <hr>
+    <mat-toolbar [hidden]="!members.length">
+        <input type="text" class="form-control form-control-dark" placeholder="使用姓名 / 卡号搜索会员" aria-label="搜索">
+        <button mat-raised-button color="primary" >搜索</button>
+    </mat-toolbar>
+    <!-- <mat-progress-bar mode="indeterminate" [hidden]="!members.length"></mat-progress-bar>
+     -->
+    
+    
+    <table class="table table-striped "[hidden]="!members.length">
+        <thead>
+          <tr>
+            <th *ngFor="let item of tHead" scope="col">{{item}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let member of members">
+            <td>{{member.card_number}}</td>
+            <td>{{member.name}}</td>
+            <td *ngIf="member.gender">男宾</td>
+            <td *ngIf="!member.gender">女宾</td>
+            <td>{{member.phone}}</td>
+            <td>{{member.open_date}}</td>
+            <td>{{member.balance}}</td>
+            <td>
+
+              <button mat-raised-button class="btn btn-success btn-sm" type="button" (click)="topUpForExistedMember(member)">充值金额</button>
+              <button mat-raised-button class="btn btn-primary btn-sm" type="button" (click)="updateExistedMember(member)">更新信息</button>
+              <button mat-raised-button class="btn btn-danger btn-sm" type="button" (click)="deleteMember(member.id)">删除会员</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+</div>

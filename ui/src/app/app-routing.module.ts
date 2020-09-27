@@ -1,12 +1,18 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { fromEventPattern } from 'rxjs';
-import { LoginComponent, DashboardComponent } from './components';
+import { DashboardComponent, MemberMgmtComponent } from './components';
 
 const routes: Routes = [
-  { path: '', component: LoginComponent},
-  { path: 'dashboard', component:DashboardComponent},
-  { path: '**', redirectTo: ''}
+  { path: '', pathMatch:'full', redirectTo: 'login'},
+  { path:'login', loadChildren:'./modules/login/login.module#LoginModule'},
+  { 
+    path: 'dashboard', component:DashboardComponent,
+    children:[
+      {path : 'members',component: MemberMgmtComponent },
+      {path : 'members/:id', component: MemberMgmtComponent},
+      {path : '**', redirectTo:'dashboard'}
+    ]
+  },
 ];
 
 @NgModule({

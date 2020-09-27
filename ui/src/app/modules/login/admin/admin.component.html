@@ -1,0 +1,23 @@
+<br>
+<div class="alert alert-danger alert-dismissible fade show" *ngIf="valid">
+    <sup>*</sup>{{validateMsg}}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close" (click)="toggle(false,'')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+ </div>
+<form [formGroup]="form">
+	<div class="tab-content">
+		<div class="content-container tab-content-height">
+            <br>
+			<mat-form-field>
+				<input matInput formControlName="name" placeholder="用户名">
+            </mat-form-field>
+            <br>
+            <mat-form-field>
+                <input matInput type="password" formControlName="password" placeholder="密码">
+            </mat-form-field>
+            <br>
+            <button mat-raised-button color="primary" (click)="login()">登录</button>
+        </div>
+	</div>
+</form>
