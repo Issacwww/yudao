@@ -9,7 +9,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
   styleUrls: ['dialog.component.scss'],
   template: `
     <div mat-dialog-content>
-      <p class="dialog-paragraph">{{ data.headerText }}</p>
+      <h3 class="dialog-paragraph">{{ data.headerText }}</h3>
       <ng-container
         [ngTemplateOutlet]="data.template"
         [ngTemplateOutletContext]="data.context"

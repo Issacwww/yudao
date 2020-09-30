@@ -8,6 +8,8 @@ from .serializers import *
 class StoreInfoModelViewSet(ModelViewSet):
     serializer_class = StoreInfoModelSerializer
     queryset = StoreInfo.objects.all()
+    ordering_fields = ['open_date', 'id']
+    ordering = ['id']
 
 
 class LoginView(APIView):
@@ -34,6 +36,7 @@ class LoginView(APIView):
 class MemberInfoModelViewSet(ModelViewSet):
     serializer_class = MemberInfoModelSerializer
     queryset = MemberInfo.objects.all()
+    ordering = ['id']
 
 
 class ServiceInfoModelViewSet(ModelViewSet):

@@ -4,8 +4,8 @@ from django.db import models
 # Create your models here.
 
 class StoreInfo(models.Model):
-    store_name = models.CharField(max_length=20, verbose_name='店名')
-    address = models.TextField(verbose_name='门店地址')
+    store_name = models.CharField(max_length=20, verbose_name='店名', unique=True)
+    address = models.TextField(verbose_name='门店地址', unique=True)
     phone = models.CharField(max_length=16, verbose_name='联系方式')
     open_date = models.DateField(verbose_name='开张日期')
 
@@ -19,7 +19,7 @@ class StoreInfo(models.Model):
 
 
 class AdminInfo(models.Model):
-    admin_name = models.CharField(max_length=20, verbose_name='管理员')
+    admin_name = models.CharField(max_length=20, verbose_name='管理员', unique=True)
     password = models.CharField(max_length=20, verbose_name='密码')
     is_super_admin = models.BooleanField(verbose_name='超级管理员')
 
@@ -55,7 +55,7 @@ class MemberInfo(models.Model):
     name = models.CharField(max_length=8, verbose_name='姓名')
     gender = models.BooleanField(default=True, verbose_name='性别')
     phone = models.CharField(max_length=16, verbose_name='联系方式')
-    card_number = models.CharField(db_index=True, max_length=6, verbose_name='会员卡号')
+    card_number = models.CharField(db_index=True, max_length=6, verbose_name='会员卡号', unique=True)
     open_date = models.DateField(verbose_name='办理日期')
     balance = models.FloatField(verbose_name='余额')
 
@@ -71,9 +71,9 @@ class MemberInfo(models.Model):
 class CrewInfo(models.Model):
     name = models.CharField(max_length=8, verbose_name='姓名')
     gender = models.BooleanField(default=True, verbose_name='性别')
-    national_id = models.CharField(max_length=20, verbose_name='身份证号')
+    national_id = models.CharField(max_length=20, verbose_name='身份证号', unique=True)
     phone = models.CharField(max_length=16, verbose_name='联系方式')
-    crew_number = models.CharField(db_index=True, max_length=6, verbose_name='技师工号')
+    crew_number = models.CharField(db_index=True, max_length=6, verbose_name='技师工号', unique=True)
     hire_date = models.DateField(verbose_name='入职日期')
 
     class Meta:
@@ -86,7 +86,7 @@ class CrewInfo(models.Model):
 
 
 class ServiceInfo(models.Model):
-    name = models.CharField(max_length=10, verbose_name='服务名称')
+    name = models.CharField(max_length=10, verbose_name='服务名称', unique=True)
     duration = models.IntegerField(default=0, verbose_name="项目时常")
     price = models.IntegerField(default=0, verbose_name="项目费用")
 
@@ -100,9 +100,8 @@ class ServiceInfo(models.Model):
 
 
 class RoomInfo(models.Model):
-    name = models.CharField(max_length=6, verbose_name='房间名称')
+    name = models.CharField(max_length=6, verbose_name='房间名称', unique=True)
     bed_count = models.IntegerField(default=0, verbose_name="床位总数")
-    price = models.IntegerField(default=0, verbose_name="项目费用")
 
     class Meta:
         db_table = 'room'

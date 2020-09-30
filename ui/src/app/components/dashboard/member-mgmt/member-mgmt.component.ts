@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { Member } from './member';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { DialogService, DialogFactoryService, DialogData } from '../../../modules/dialog';
-import { RequestService, DateService} from '../../../services';
+import { RequestService, DateService, FilterService, StorageService} from '../../../services';
 @Component({
   selector: 'app-member-mgmt',
   templateUrl: './member-mgmt.component.html',
@@ -15,6 +15,7 @@ export class MemberMgmtComponent implements OnInit {
   genders = [{value:true, label:'男宾'},{value:false, label:'女宾'}];
   form: FormGroup;
   mode: boolean;
+  query: string = '';
   operateMemberId: Number;
   dialog: DialogService;
   @ViewChild('addNewMemberTemplate')
@@ -24,7 +25,9 @@ export class MemberMgmtComponent implements OnInit {
     private dialogFactoryService: DialogFactoryService,
     private formBuilder: FormBuilder,
     private req: RequestService,
-    private date: DateService
+    private date: DateService,
+    private filter: FilterService,
+    private storage: StorageService
   ) { }
 
   ngOnInit(): void {
@@ -90,7 +93,8 @@ export class MemberMgmtComponent implements OnInit {
   }
   getAllMembers():void {
     this.req.baseGet('members/').subscribe(memberList => {
-      this.members = memberList as Member[]
+      this.members = memberList as Member[];
+      this.storage.set('members', this.members);
     })
   } 
 
@@ -113,8 +117,12 @@ export class MemberMgmtComponent implements OnInit {
 
   }
 
-  searchMemberByNameOrCardNumber(query: String){
+  search(){
+    this.members = this.filter.processQuery(this.storage.get('members'), "card_number", this.query);
+  }
 
+  reset(){
+    this.members = this.storage.get('members');
   }
 
 }

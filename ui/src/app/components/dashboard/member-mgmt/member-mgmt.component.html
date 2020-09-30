@@ -6,7 +6,7 @@
         <input matInput placeholder="姓名" name="name" formControlName="name">
       </mat-form-field>
     </p>
-    <p>
+    <!-- <p> -->
       <mat-radio-group formControlName="gender" [readonly]="!mode" [disabled]="!mode">
         <mat-radio-button 
           *ngFor="let gender of genders" 
@@ -15,7 +15,7 @@
           {{gender.label}}
         </mat-radio-button>
       </mat-radio-group>
-    </p>
+    <!-- </p> -->
     <p>
       <mat-form-field>
         <mat-label>联系方式</mat-label>
@@ -39,8 +39,8 @@
   </mat-dialog-content>
 
   <mat-dialog-actions>
-      <button mat-raised-button class="btn btn-lg btn-block" (click)="close()">关闭</button>
-      <button mat-raised-button class="btn btn-lg btn-block" color="primary"(click)="save()">保存</button>
+      <button mat-raised-button (click)="close()">关闭</button>
+      <button mat-raised-button color="primary"(click)="save()">保存</button>
   </mat-dialog-actions>
   
 </ng-template>
@@ -56,8 +56,9 @@
     
     <hr>
     <mat-toolbar [hidden]="!members.length">
-        <input type="text" class="form-control form-control-dark" placeholder="使用姓名 / 卡号搜索会员" aria-label="搜索">
-        <button mat-raised-button color="primary" >搜索</button>
+        <input type="text" class="form-control form-control-dark" placeholder="使用姓名 / 卡号搜索会员" [(ngModel)]="query" aria-label="搜索">
+        <button mat-raised-button color="primary" (click)="search()" >搜索</button>
+        <button mat-raised-button (click)="reset()">重置</button>
     </mat-toolbar>
     <!-- <mat-progress-bar mode="indeterminate" [hidden]="!members.length"></mat-progress-bar>
      -->
@@ -79,11 +80,17 @@
             <td>{{member.open_date}}</td>
             <td>{{member.balance}}</td>
             <td>
-
-              <button mat-raised-button class="btn btn-success btn-sm" type="button" (click)="topUpForExistedMember(member)">充值金额</button>
-              <button mat-raised-button class="btn btn-primary btn-sm" type="button" (click)="updateExistedMember(member)">更新信息</button>
-              <button mat-raised-button class="btn btn-danger btn-sm" type="button" (click)="deleteMember(member.id)">删除会员</button>
-            </td>
+              <button mat-icon-button [matMenuTriggerFor]="menu">
+                <mat-icon>settings</mat-icon>
+              </button>
+              <mat-menu #menu="matMenu">
+                <ng-template matMenuContent>
+                  <button mat-menu-item type="button" (click)="topUpForExistedMember(member)">充值金额</button>
+                  <button mat-menu-item type="button" (click)="updateExistedMember(member)">更新信息</button>
+                  <button mat-menu-item type="button" (click)="deleteMember(member.id)">删除会员</button>
+                </ng-template>
+              </mat-menu>
+              </td>
           </tr>
         </tbody>
       </table>

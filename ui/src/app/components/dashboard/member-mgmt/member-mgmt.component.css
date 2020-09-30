@@ -4,3 +4,8 @@
 .mat-form-field{
     display: block;
 }
+.mat-dialog-actions {
+    display: inline-block;
+    justify-content: flex-end;
+    margin: 0;
+}

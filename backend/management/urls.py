@@ -4,7 +4,7 @@ from rest_framework.routers import DefaultRouter
 
 
 urlpatterns = [
-    url(r'auth/$', views.LoginView.as_view()),
+    url(r'auth/$', views.LoginView.as_view())
 ]
 
 router = DefaultRouter()

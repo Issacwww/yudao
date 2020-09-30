@@ -13,7 +13,7 @@ import { AppComponent } from './app.component';
 import { DashboardComponent, MemberMgmtComponent } from './components';
 
 // Services
-import { RequestService,StorageService,DateService } from './services';
+import { RequestService,StorageService,DateService,FilterService } from './services';
 
 
 @NgModule({
@@ -33,7 +33,7 @@ import { RequestService,StorageService,DateService } from './services';
     BrowserAnimationsModule,
     MaterialModule
   ],
-  providers: [RequestService, StorageService, DateService],
+  providers: [RequestService, StorageService, DateService, FilterService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

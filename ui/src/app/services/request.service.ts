@@ -21,8 +21,6 @@ export class RequestService {
 
   basePatch(path, data):Observable<any>{
     data['responseType'] = 'json';
-    console.log(data);
-    console.log(path);
     return this.http.patch(this.baseAPI + path, data);
   }
 }
