@@ -18,7 +18,6 @@ export class CrewMgmtComponent implements OnInit {
   form: FormGroup;
   isInsert: boolean;
   query: string = '';
-  topUpAmount: number;
   operateStaff: Crew;
   hasCrew = false;
 
@@ -50,7 +49,7 @@ export class CrewMgmtComponent implements OnInit {
     this.getCrew();
   }
   
-  private populateMemberFormForInput(staff: Crew) {
+  private populateStaffFormForInput(staff: Crew) {
     this.form.setValue({
       "name": staff.name,
       "gender": staff.gender,
@@ -77,7 +76,7 @@ export class CrewMgmtComponent implements OnInit {
   updateHiredStaff(updateStaff:Crew):void{
     this.isInsert = false;
     this.operateStaff = updateStaff;
-    this.populateMemberFormForInput(updateStaff);
+    this.populateStaffFormForInput(updateStaff);
     this.openStaffDialog();
   }
 
@@ -131,10 +130,7 @@ export class CrewMgmtComponent implements OnInit {
       this.req.basePatch(this.enterPoint+this.operateStaff.id+"/",{
         name: this.form.value.name,
         phone: this.form.value.phone
-      }).subscribe((data)=>{
-        console.log(data);
-        this.ngOnInit();
-      });
+      }).subscribe((data)=>{this.ngOnInit();});
     }
     this.close();
     this.form.reset();

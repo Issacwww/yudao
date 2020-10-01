@@ -1,1 +1,86 @@
-<p>service-mgmt works!</p>
+<ng-template #confirmTemplate>
+    <mat-dialog-content>
+      <p>{{confirmMessage}}</p>
+    </mat-dialog-content>
+    <mat-dialog-actions>
+      <button mat-raised-button color="primary"(click)="confirm()">确认</button>
+      <button mat-raised-button (click)="close()">取消</button>
+    </mat-dialog-actions>
+  </ng-template>
+  
+<ng-template #ServiceTemplate>
+    <mat-dialog-content [formGroup]="form">
+      <p>
+        <mat-form-field>
+          <mat-label>项目名称</mat-label>
+          <input matInput placeholder="项目名称" name="name" formControlName="name">
+        </mat-form-field>
+      </p>
+      
+      <p>
+        <mat-form-field>
+          <mat-label>项目时长</mat-label>
+          <input matInput placeholder="项目时长" name="duration" formControlName="duration">
+        </mat-form-field>
+      </p>
+      <p>
+        <mat-form-field>
+          <mat-label>项目价格</mat-label>
+          <input matInput placeholder="项目价格" name="price" formControlName="price">
+        </mat-form-field>
+      </p>
+      
+    </mat-dialog-content>
+  
+    <mat-dialog-actions>
+        <button mat-raised-button color="primary"(click)="save()">保存</button>
+        <button mat-raised-button (click)="close()">关闭</button>
+    </mat-dialog-actions>
+    
+  </ng-template>
+  
+  <div class="main container table-responsive">
+      <br>  
+      <mat-toolbar>
+          <span class="count">当前共有{{services.length}}项服务项目</span>
+          <span class="spacer"></span>
+          <button mat-stroked-button color="primary" type="button" (click)="insertService()">新增项目</button>
+     
+        </mat-toolbar >
+      
+      <hr>
+      <mat-toolbar [hidden]="!hasService">
+          <input type="text" class="form-control form-control-dark" placeholder="使用项目名称搜索项目" [(ngModel)]="query" aria-label="搜索"> &nbsp; &nbsp;
+          <button mat-raised-button color="primary" (click)="search()" >搜索</button>
+          <button mat-raised-button (click)="reset()">重置</button>
+      </mat-toolbar>
+  
+      
+      <table class="table table-striped "[hidden]="!services.length">
+          <thead>
+            <tr>
+              <th *ngFor="let item of tHead" scope="col">{{item}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let service of services">
+              <td>{{service.name}}</td>
+              <td>{{service.duration}}</td>
+              <td>{{service.price}}</td>
+              <td>
+                <button mat-icon-button [matMenuTriggerFor]="menu">
+                  <mat-icon>settings</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu">
+                  <ng-template matMenuContent>
+                    <button mat-menu-item type="button" (click)="updateExistedService(service)">更新信息</button>
+                    <button mat-menu-item type="button" (click)="deleteService(service)">删除项目</button>
+                  </ng-template>
+                </mat-menu>
+                </td>
+            </tr>
+          </tbody>
+        </table>
+  
+  </div>
+  

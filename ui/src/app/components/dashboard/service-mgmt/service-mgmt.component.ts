@@ -11,21 +11,17 @@ import { RequestService, DateService, FilterService, StorageService} from '../..
 })
 export class ServiceMgmtComponent implements OnInit {
 
-  private enterPoint = 'members/';
+  private enterPoint = 'services/';
   public services : Service[] = [];
-  tHead = ['会员卡号','会员姓名','会员性别','联系方式','办理日期','当前余额','操作'];
-  genders = [{value:true, label:'男宾'},{value:false, label:'女宾'}];
+  tHead = ['项目名称','项目时长','项目价格','操作'];
   form: FormGroup;
-  mode: boolean;
+  isInsert: boolean;
   query: string = '';
-  topUpAmount: number;
-  isTopUp: boolean = false;
   dialog: DialogService;
-  @ViewChild('addNewMemberTemplate')
-  addNewMemberTemplate: TemplateRef<any>;
-
-  @ViewChild('topUpTemplate')
-  topUpTemplate: TemplateRef<any>;
+  hasService: boolean;
+  operateService: Service;
+  @ViewChild('ServiceTemplate')
+  ServiceTemplate: TemplateRef<any>;
 
   @ViewChild('confirmTemplate')
   confirmTemplate: TemplateRef<any>;
@@ -43,15 +39,13 @@ export class ServiceMgmtComponent implements OnInit {
   ngOnInit(): void {
     this.form = this.formBuilder.group({
       name: [''],
-      gender: [true],
-      phone: [''],
-      card_number: [''],
-      balance: []
+      duration: [''],
+      price: ['']
     });
-    this.getCrew();
+    this.getServiceList();
   }
   
-  private populateMemberFormForInput(service: Service) {
+  private populateServiceFormForInput(service: Service) {
     this.form.setValue({
       "name": service.name,
       "duration": service.duration,
@@ -62,70 +56,89 @@ export class ServiceMgmtComponent implements OnInit {
   /**
    * CURD functions
    */
-  insertMember():void{
+  insertService():void{
+    this.isInsert = true;
+    this.openServiceDialog();
   }
 
-  deleteMember(deleteMember:Service):void{
-    this.isTopUp = false;
-    this.openConfirmDialog(`是否确认删除该技师:${deleteMember.name}?`);
+  deleteService(deleteService:Service):void{
+    this.operateService = deleteService;
+    this.openConfirmDialog(`是否确认删除该项目:${deleteService.name}?`);
   }
 
-  updateExistedMember(updateMember:Service):void{
-    this.populateMemberFormForInput(updateMember);
-    this.toggleMemberDialog(1);
+  updateExistedService(updateService:Service):void{
+    this.isInsert = false;
+    this.operateService = updateService;
+    this.populateServiceFormForInput(updateService);
+    this.openServiceDialog();
   }
 
   
-  getCrew():void {
-   
+  getServiceList():void {
+    this.req.baseGet(this.enterPoint).subscribe((serviceList) => {
+      this.services = serviceList as Service[];
+      this.services.sort((a, b) => a.id < b.id ? -1 : 1)
+      this.storage.set('services', this.services);
+      this.hasService = serviceList.length > 0;
+    })
   } 
 
   search(){
-    this.services = this.filter.processQuery(this.storage.get('crew'), "card_number", this.query);
+    this.services = this.filter.processQuery(this.storage.get('services'), "", this.query);
     this.query = '';
   }
 
   reset(){
     this.query = '';
-    this.services = this.storage.get('crew');
+    this.services = this.storage.get('services');
   }
 
   /**
    * dialog related functions
    */
 
-  toggleMemberDialog(mode){
-
+  openServiceDialog(){
+    let title = this.isInsert ? '新增项目' : '修改信息';
+    this.openDialog({
+      headerText: title,
+      template: this.ServiceTemplate
+    })
   }
 
-  openConfirmDialog(msg:String){
-
+  private openConfirmDialog(msg){
+    this.confirmMessage = msg;
+    this.openDialog({
+      headerText: '确认',
+      template: this.confirmTemplate
+    })
   }
 
   save() {
     //todo: call api to save, add loading, then 
-    if(this.mode){
+    if(this.isInsert){
       //insert
       let newMember = this.form.value;
       newMember['open_date'] = this.date.today();
-      this.req.basePost(this.enterPoint,newMember).subscribe((res)=>window.location.reload())
+      this.req.basePost(this.enterPoint,newMember).subscribe((res)=>this.ngOnInit())
     }else{
       //patch
-      this.req.basePatch(this.enterPoint+"/",{
-        name: this.form.value.name,
-        phone: this.form.value.phone
-      }).subscribe((data)=>{
-        console.log(data);
-        window.location.reload();
-      });
+      this.req.basePatch(this.enterPoint+this.operateService.id+"/",this.form.value)
+          .subscribe((data)=>{this.ngOnInit()});
     }
     this.close();
     this.form.reset();
-    this.form.patchValue({"gender":true});
   }
 
+  confirm(){
+    this.req.baseDelete(this.enterPoint,this.operateService.id).subscribe(res=>this.ngOnInit());
+    this.close();
+  }
 
   close(){
     this.dialog.close();
+  }
+
+  private openDialog(dialogData: DialogData): void {
+    this.dialog = this.dialogFactoryService.open(dialogData);
   }
 }

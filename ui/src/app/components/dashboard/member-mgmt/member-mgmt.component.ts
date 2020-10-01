@@ -145,16 +145,13 @@ export class MemberMgmtComponent implements OnInit {
       //insert
       let newMember = this.form.value;
       newMember['open_date'] = this.date.today();
-      this.req.basePost(this.enterPoint,newMember).subscribe((res)=>window.location.reload())
+      this.req.basePost(this.enterPoint,newMember).subscribe((res)=>this.ngOnInit());
     }else{
       //patch
       this.req.basePatch(this.enterPoint+this.operateMember.id+"/",{
         name: this.form.value.name,
         phone: this.form.value.phone
-      }).subscribe((data)=>{
-        console.log(data);
-        window.location.reload();
-      });
+      }).subscribe((data)=>{this.ngOnInit()});
     }
     this.close();
     this.form.reset();
@@ -167,7 +164,6 @@ export class MemberMgmtComponent implements OnInit {
   }
 
   confirm(){
-    console.log(this.confirmMessage);
     if(this.isTopUp){
       // todo: one more records should be created in the topUp table.
       this.req.basePatch(this.enterPoint+this.operateMember.id+"/",{
@@ -178,12 +174,12 @@ export class MemberMgmtComponent implements OnInit {
           amount: +this.topUpAmount,
           topup_date: this.date.today()
         }).subscribe((data)=>{
-          window.location.reload();
+          this.ngOnInit();
         })
       });
     }else{
       //do delete
-      this.req.baseDelete(this.enterPoint,this.operateMember.id).subscribe(res=>window.location.reload());
+      this.req.baseDelete(this.enterPoint,this.operateMember.id).subscribe(res=>this.ngOnInit());
     }
     this.close();
   }
