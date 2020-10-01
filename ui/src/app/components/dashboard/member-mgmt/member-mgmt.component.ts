@@ -10,16 +10,27 @@ import { RequestService, DateService, FilterService, StorageService} from '../..
 })
 export class MemberMgmtComponent implements OnInit {
 
+  private enterPoint = 'members/';
   public members : Member[] = [];
   tHead = ['会员卡号','会员姓名','会员性别','联系方式','办理日期','当前余额','操作'];
   genders = [{value:true, label:'男宾'},{value:false, label:'女宾'}];
   form: FormGroup;
   mode: boolean;
   query: string = '';
-  operateMemberId: Number;
+  topUpAmount: number;
+  operateMember: Member;
+  isTopUp: boolean = false;
+  hasMember = false;
   dialog: DialogService;
   @ViewChild('addNewMemberTemplate')
   addNewMemberTemplate: TemplateRef<any>;
+
+  @ViewChild('topUpTemplate')
+  topUpTemplate: TemplateRef<any>;
+
+  @ViewChild('confirmTemplate')
+  confirmTemplate: TemplateRef<any>;
+  confirmMessage:string;
 
   constructor(
     private dialogFactoryService: DialogFactoryService,
@@ -40,6 +51,63 @@ export class MemberMgmtComponent implements OnInit {
     });
     this.getAllMembers();
   }
+  
+  private populateMemberFormForInput(member: Member) {
+    this.form.setValue({
+      "name": member.name,
+      "gender": member.gender,
+      "phone": member.phone,
+      "card_number": member.card_number,
+      "balance": member.balance
+    })
+  }
+
+  /**
+   * CURD functions
+   */
+  insertMember():void{
+    this.toggleMemberDialog(0);
+  }
+
+  deleteMember(deleteMember:Member):void{
+    this.isTopUp = false;
+    this.operateMember = deleteMember;
+    this.openConfirmDialog(`是否确认删除会员:${deleteMember.name}?`);
+  }
+
+  updateExistedMember(updateMember:Member):void{
+    this.operateMember = updateMember;
+    this.populateMemberFormForInput(updateMember);
+    this.toggleMemberDialog(1);
+  }
+
+  topUpForExistedMember(topUpMember:Member):void{
+    this.isTopUp = true;
+    this.operateMember = topUpMember;
+    this.confirmMessage = `确认为会员${topUpMember.name}充值`;
+    this.openTopUpDialog(topUpMember);
+    
+  }
+
+  getAllMembers():void {
+    this.req.baseGet(this.enterPoint).subscribe(memberList => {
+      this.members = memberList as Member[];
+      this.members.sort((a, b) => a.card_number < b.card_number ? -1 : 1)
+      this.storage.set('members', this.members);
+      this.hasMember = memberList.length > 0;
+    })
+  } 
+
+  search(){
+    this.members = this.filter.processQuery(this.storage.get('members'), "card_number", this.query);
+    this.query = '';
+  }
+
+  reset(){
+    this.query = '';
+    this.members = this.storage.get('members');
+  }
+
   /**
    * dialog related functions
    */
@@ -51,21 +119,36 @@ export class MemberMgmtComponent implements OnInit {
       template: this.addNewMemberTemplate
     });
   }
-  close(){
-    this.dialog.close();
-    this.form.reset();
-    this.form.patchValue({"gender":true});
+  
+  private openDialog(dialogData: DialogData): void {
+    this.dialog = this.dialogFactoryService.open(dialogData);
   }
+
+  openTopUpDialog(topUpMember:Member){
+    this.openDialog({
+      headerText:"会员充值",
+      template:this.topUpTemplate
+    })
+  }
+
+  openConfirmDialog(msg:string){
+    this.openDialog({
+      headerText:"",
+      template:this.confirmTemplate
+    })
+    this.confirmMessage = msg;
+  }
+
   save() {
     //todo: call api to save, add loading, then 
     if(this.mode){
       //insert
       let newMember = this.form.value;
       newMember['open_date'] = this.date.today();
-      this.req.basePost('members/',newMember).subscribe((res)=>window.location.reload())
+      this.req.basePost(this.enterPoint,newMember).subscribe((res)=>window.location.reload())
     }else{
       //patch
-      this.req.basePatch('members/'+this.operateMemberId+"/",{
+      this.req.basePatch(this.enterPoint+this.operateMember.id+"/",{
         name: this.form.value.name,
         phone: this.form.value.phone
       }).subscribe((data)=>{
@@ -74,55 +157,39 @@ export class MemberMgmtComponent implements OnInit {
       });
     }
     this.close();
-    //refresh
-    
+    this.form.reset();
+    this.form.patchValue({"gender":true});
   }
 
-  private openDialog(dialogData: DialogData): void {
-    this.dialog = this.dialogFactoryService.open(dialogData);
+  topUp(){
+    this.confirmMessage += `${this.topUpAmount}元?`;
+    this.dialog.setTemplate(this.confirmTemplate);
   }
 
-  private populateMemberFormForInput(member: Member) {
-    this.form.setValue({
-      "name": member.name,
-      "gender": member.gender,
-      "phone": member.phone,
-      "card_number": member.card_number,
-      "balance": member.balance
-    })
-  }
-  getAllMembers():void {
-    this.req.baseGet('members/').subscribe(memberList => {
-      this.members = memberList as Member[];
-      this.storage.set('members', this.members);
-    })
-  } 
-
-  insertMember():void{
-    this.toggleMemberDialog(0);
-  }
-
-  updateExistedMember(updateMember:Member):void{
-    this.operateMemberId = updateMember.id;
-    this.populateMemberFormForInput(updateMember);
-    this.toggleMemberDialog(1);
-    console.log(updateMember);
+  confirm(){
+    console.log(this.confirmMessage);
+    if(this.isTopUp){
+      // todo: one more records should be created in the topUp table.
+      this.req.basePatch(this.enterPoint+this.operateMember.id+"/",{
+        balance:+this.operateMember.balance + +this.topUpAmount
+      }).subscribe((data)=>{
+        this.req.basePost("topup/",{
+          member: this.operateMember.id,
+          amount: +this.topUpAmount,
+          topup_date: this.date.today()
+        }).subscribe((data)=>{
+          window.location.reload();
+        })
+      });
+    }else{
+      //do delete
+      this.req.baseDelete(this.enterPoint,this.operateMember.id).subscribe(res=>window.location.reload());
+    }
+    this.close();
   }
 
-  topUpForExistedMember(updateMember:Member):void{
-    this.operateMemberId = updateMember.id;
-  }
-
-  deleteMember(id:number):void{
-
-  }
-
-  search(){
-    this.members = this.filter.processQuery(this.storage.get('members'), "card_number", this.query);
-  }
-
-  reset(){
-    this.members = this.storage.get('members');
+  close(){
+    this.dialog.close();
   }
 
 }

@@ -49,7 +49,7 @@ export class AdminComponent implements OnInit {
     this.req.basePost('auth/', {
       admin_name: this.name.value,
       password: this.password.value,
-      store: ''
+      store: '0'
     }).subscribe(
       (data) => {
         console.log(data);

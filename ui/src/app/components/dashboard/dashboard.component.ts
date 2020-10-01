@@ -33,8 +33,8 @@ export class DashboardComponent implements OnInit {
       name:'客房管理'
     },
     {
-      path:'/spending',
-      name:'日常开支'
+      path:'/finance',
+      name:'收支管理'
     },
     {
       path:'/statistic',

@@ -19,7 +19,8 @@ class StoreInfo(models.Model):
 
 
 class AdminInfo(models.Model):
-    admin_name = models.CharField(max_length=20, verbose_name='管理员', unique=True)
+    # set admin_name to unique and change login from post to get
+    admin_name = models.CharField(max_length=20, verbose_name='管理员')
     password = models.CharField(max_length=20, verbose_name='密码')
     is_super_admin = models.BooleanField(verbose_name='超级管理员')
 
@@ -124,3 +125,14 @@ class SpendingInfo(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class TopUpInfo(models.Model):
+    member = models.ForeignKey(MemberInfo, on_delete=models.CASCADE)
+    amount = models.IntegerField(default=0, verbose_name="充值金额")
+    topup_date = models.DateField(verbose_name="充值时间")
+
+    class Meta:
+        db_table = 'topup'
+        verbose_name = '充值记录'
+        verbose_name_plural = verbose_name

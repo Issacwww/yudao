@@ -87,3 +87,9 @@ class SpendingInfoModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = SpendingInfo
         fields = "__all__"
+
+
+class TopUpInfoModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TopUpInfo
+        fields = "__all__"

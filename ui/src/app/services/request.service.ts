@@ -19,8 +19,17 @@ export class RequestService {
     return this.http.post(this.baseAPI + path, data);
   }
 
+  basePut(path, data):Observable<any>{
+    data['responseType'] = 'json';
+    return this.http.put(this.baseAPI + path, data);
+  }
+  
   basePatch(path, data):Observable<any>{
     data['responseType'] = 'json';
     return this.http.patch(this.baseAPI + path, data);
+  }
+
+  baseDelete(path, id): Observable<any>{
+    return this.http.delete(this.baseAPI + path + id);
   }
 }

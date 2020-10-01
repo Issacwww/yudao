@@ -10,7 +10,7 @@ import { LoginModule, DialogModule } from './modules';
 // Components
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { DashboardComponent, MemberMgmtComponent } from './components';
+import { DashboardComponent, MemberMgmtComponent, CrewMgmtComponent, ServiceMgmtComponent } from './components';
 
 // Services
 import { RequestService,StorageService,DateService,FilterService } from './services';
@@ -20,7 +20,9 @@ import { RequestService,StorageService,DateService,FilterService } from './servi
   declarations: [
     AppComponent,
     DashboardComponent,
-    MemberMgmtComponent
+    MemberMgmtComponent,
+    CrewMgmtComponent,
+    ServiceMgmtComponent
   ],
   imports: [
     BrowserModule,

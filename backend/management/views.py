@@ -8,8 +8,6 @@ from .serializers import *
 class StoreInfoModelViewSet(ModelViewSet):
     serializer_class = StoreInfoModelSerializer
     queryset = StoreInfo.objects.all()
-    ordering_fields = ['open_date', 'id']
-    ordering = ['id']
 
 
 class LoginView(APIView):
@@ -29,14 +27,15 @@ class LoginView(APIView):
             if credential_serializer.is_valid(raise_exception=True):
                 return Response(token, status=status.HTTP_200_OK)
             else:
+                print("invalid login 1")
                 return Response(credential_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        print("invalid login 2")
         return Response(admin_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class MemberInfoModelViewSet(ModelViewSet):
     serializer_class = MemberInfoModelSerializer
     queryset = MemberInfo.objects.all()
-    ordering = ['id']
 
 
 class ServiceInfoModelViewSet(ModelViewSet):
@@ -57,3 +56,8 @@ class SpendingInfoModelViewSet(ModelViewSet):
 class RoomInfoModelViewSet(ModelViewSet):
     serializer_class = RoomInfoModelSerializer
     queryset = RoomInfo.objects.all()
+
+
+class TopUpInfoModelViewSet(ModelViewSet):
+    serializer_class = TopUpInfoModelSerializer
+    queryset = TopUpInfo.objects.all()

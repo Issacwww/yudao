@@ -5,5 +5,5 @@ export class Member {
     phone: String;
     card_number: String;
     open_date: Date;
-    balance: Number;
+    balance: number;
 }

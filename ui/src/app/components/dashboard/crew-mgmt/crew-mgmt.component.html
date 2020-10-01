@@ -1,0 +1,105 @@
+<ng-template #confirmTemplate>
+    <mat-dialog-content>
+      <p>{{confirmMessage}}</p>
+    </mat-dialog-content>
+    <mat-dialog-actions>
+      <button mat-raised-button color="primary"(click)="confirm()">确认</button>
+      <button mat-raised-button (click)="close()">取消</button>
+    </mat-dialog-actions>
+  </ng-template>
+  
+<ng-template #addNewStaffTemplate>
+    <mat-dialog-content [formGroup]="form">
+      <p>
+        <mat-form-field>
+          <mat-label>姓名</mat-label>
+          <input matInput placeholder="姓名" name="name" formControlName="name">
+        </mat-form-field>
+      </p>
+      <!-- <p> -->
+        <mat-radio-group formControlName="gender" [readonly]="!isInsert" [disabled]="!isInsert">
+          <mat-radio-button 
+            *ngFor="let gender of genders" 
+            name="gender" 
+            [value]="gender.value" >
+            {{gender.label}}
+          </mat-radio-button>
+        </mat-radio-group>
+      <!-- </p> -->
+      <p>
+        <mat-form-field>
+          <mat-label>身份证号</mat-label>
+          <input matInput placeholder="身份证号" name="national_id" formControlName="national_id" [readonly]="!isInsert">
+        </mat-form-field>
+      </p>
+      <p>
+        <mat-form-field>
+          <mat-label>联系方式</mat-label>
+          <input matInput placeholder="联系方式" name="phone" formControlName="phone">
+        </mat-form-field>
+      </p>
+      <p>
+        <mat-form-field>
+          <mat-label>技师工号</mat-label>
+          <input matInput placeholder="技师工号" name="crew_number" formControlName="crew_number" [readonly]="!isInsert">
+        </mat-form-field>
+      </p>
+      
+    </mat-dialog-content>
+  
+    <mat-dialog-actions>
+        <button mat-raised-button color="primary"(click)="save()">保存</button>
+        <button mat-raised-button (click)="close()">关闭</button>
+    </mat-dialog-actions>
+    
+  </ng-template>
+  
+  <div class="main container table-responsive">
+      <br>  
+      <mat-toolbar>
+          <span class="count">当前共有{{crew.length}}位技师</span>
+          <span class="spacer"></span>
+          <button mat-stroked-button color="primary" type="button" (click)="insertStaff()">新增技师</button>
+     
+        </mat-toolbar >
+      
+      <hr>
+      <mat-toolbar [hidden]="!hasCrew">
+          <input type="text" class="form-control form-control-dark" placeholder="使用姓名 / 工号搜索技师" [(ngModel)]="query" aria-label="搜索"> &nbsp; &nbsp;
+          <button mat-raised-button color="primary" (click)="search()" >搜索</button>
+          <button mat-raised-button (click)="reset()">重置</button>
+      </mat-toolbar>
+  
+      
+      <table class="table table-striped "[hidden]="!crew.length">
+          <thead>
+            <tr>
+              <th *ngFor="let item of tHead" scope="col">{{item}}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let staff of crew">
+              <td>{{staff.crew_number}}</td>
+              <td>{{staff.name}}</td>
+              <td *ngIf="staff.gender">男技师</td>
+              <td *ngIf="!staff.gender">女技师</td>
+              <td>{{staff.national_id}}</td>
+              <td>{{staff.phone}}</td>
+              <td>{{staff.hire_date}}</td>
+              <td>
+                <button mat-icon-button [matMenuTriggerFor]="menu">
+                  <mat-icon>settings</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu">
+                  <ng-template matMenuContent>
+                    <button mat-menu-item type="button" (click)="updateHiredStaff(staff)">更新信息</button>
+                    <button mat-menu-item type="button" (click)="deleteStaff(staff)">删除技师</button>
+                  </ng-template>
+                </mat-menu>
+                </td>
+            </tr>
+          </tbody>
+        </table>
+  
+  </div>
+  

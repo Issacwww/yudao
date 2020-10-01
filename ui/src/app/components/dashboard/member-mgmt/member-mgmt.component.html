@@ -1,3 +1,29 @@
+<ng-template #topUpTemplate>
+  <mat-dialog-content>
+    <p>
+      <mat-form-field>
+        <mat-label>充值金额</mat-label>
+        <input matInput placeholder="充值金额" name="topUpAmount" [(ngModel)]="topUpAmount">
+      </mat-form-field>
+    </p>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <button mat-raised-button color="primary"(click)="topUp()">充值</button>
+    <button mat-raised-button (click)="close()">取消</button>
+  </mat-dialog-actions>
+</ng-template>
+
+<ng-template #confirmTemplate>
+  <mat-dialog-content>
+    <p>{{confirmMessage}}</p>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <button mat-raised-button color="primary"(click)="confirm()">确认</button>
+    <button mat-raised-button (click)="close()">取消</button>
+  </mat-dialog-actions>
+</ng-template>
+
+
 <ng-template #addNewMemberTemplate>
   <mat-dialog-content [formGroup]="form">
     <p>
@@ -39,8 +65,8 @@
   </mat-dialog-content>
 
   <mat-dialog-actions>
-      <button mat-raised-button (click)="close()">关闭</button>
       <button mat-raised-button color="primary"(click)="save()">保存</button>
+      <button mat-raised-button (click)="close()">关闭</button>
   </mat-dialog-actions>
   
 </ng-template>
@@ -50,19 +76,16 @@
     <mat-toolbar>
         <span class="count">当前共有{{members.length}}位会员</span>
         <span class="spacer"></span>
-        <button class="btn btn-outline-primary" type="button" (click)="insertMember()">新增会员</button>
+        <button mat-stroked-button color="primary" type="button" (click)="insertMember()">新增会员</button>
    
       </mat-toolbar >
     
     <hr>
-    <mat-toolbar [hidden]="!members.length">
-        <input type="text" class="form-control form-control-dark" placeholder="使用姓名 / 卡号搜索会员" [(ngModel)]="query" aria-label="搜索">
+    <mat-toolbar [hidden]="!hasMember">
+        <input type="text" class="form-control form-control-dark" placeholder="使用姓名 / 卡号搜索会员" [(ngModel)]="query" aria-label="搜索"> &nbsp; &nbsp;
         <button mat-raised-button color="primary" (click)="search()" >搜索</button>
         <button mat-raised-button (click)="reset()">重置</button>
     </mat-toolbar>
-    <!-- <mat-progress-bar mode="indeterminate" [hidden]="!members.length"></mat-progress-bar>
-     -->
-    
     
     <table class="table table-striped "[hidden]="!members.length">
         <thead>
@@ -87,7 +110,7 @@
                 <ng-template matMenuContent>
                   <button mat-menu-item type="button" (click)="topUpForExistedMember(member)">充值金额</button>
                   <button mat-menu-item type="button" (click)="updateExistedMember(member)">更新信息</button>
-                  <button mat-menu-item type="button" (click)="deleteMember(member.id)">删除会员</button>
+                  <button mat-menu-item type="button" (click)="deleteMember(member)">删除会员</button>
                 </ng-template>
               </mat-menu>
               </td>
