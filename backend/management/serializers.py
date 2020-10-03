@@ -90,6 +90,8 @@ class SpendingInfoModelSerializer(serializers.ModelSerializer):
 
 
 class TopUpInfoModelSerializer(serializers.ModelSerializer):
+    member = serializers.StringRelatedField(read_only=True)
+
     class Meta:
         model = TopUpInfo
         fields = "__all__"

@@ -45,7 +45,14 @@ export class DashboardComponent implements OnInit {
   constructor(public router: Router) { }
 
   ngOnInit(): void {
-
+    let path = "/"+this.router.url.split('/')[2];
+    let idx = 0;
+    for(;idx < this.navItems.length; idx++){
+      if(this.navItems[idx].path === path){
+        this.selectedItem = idx;
+        break;
+      }
+    }
   }
 
   changeTab(idx: number){

@@ -10,11 +10,13 @@ import { LoginModule, DialogModule } from './modules';
 // Components
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { DashboardComponent, MemberMgmtComponent, CrewMgmtComponent, ServiceMgmtComponent } from './components';
+import { DashboardComponent, MemberMgmtComponent, 
+  CrewMgmtComponent, ServiceMgmtComponent,
+  RoomMgmtComponent, ServeComponent,StatisticComponent,
+  FinanceComponent, TopupComponent, SpendingComponent, OrderComponent } from './components';
 
 // Services
 import { RequestService,StorageService,DateService,FilterService } from './services';
-
 
 @NgModule({
   declarations: [
@@ -22,7 +24,14 @@ import { RequestService,StorageService,DateService,FilterService } from './servi
     DashboardComponent,
     MemberMgmtComponent,
     CrewMgmtComponent,
-    ServiceMgmtComponent
+    ServiceMgmtComponent,
+    FinanceComponent,
+    TopupComponent,
+    SpendingComponent,
+    OrderComponent,
+    RoomMgmtComponent,
+    ServeComponent,
+    StatisticComponent
   ],
   imports: [
     BrowserModule,

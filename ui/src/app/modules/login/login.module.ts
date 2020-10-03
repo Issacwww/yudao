@@ -5,12 +5,8 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MaterialModule } from '../../material-module';
 
-
-import { StoreManagerComponent } from './store-manager/store-manager.component';
-import { AdminComponent } from './admin/admin.component';
-
 import { RequestService, StorageService } from '../../services';
-import { LoginComponent } from './login.component'
+import { LoginComponent, AdminComponent, StoreManagerComponent } from '.'
 
 @NgModule({
   declarations: [

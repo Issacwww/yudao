@@ -66,7 +66,7 @@ class MemberInfo(models.Model):
         verbose_name_plural = verbose_name
 
     def __str__(self):
-        return f"No. {self.card_number}. {self.name}"
+        return f"No.{self.card_number} {self.name}"
 
 
 class CrewInfo(models.Model):
@@ -83,7 +83,7 @@ class CrewInfo(models.Model):
         verbose_name_plural = verbose_name
 
     def __str__(self):
-        return f"No. {self.crew_number}. {self.name}"
+        return f"No.{self.crew_number} {self.name}"
 
 
 class ServiceInfo(models.Model):
@@ -114,9 +114,10 @@ class RoomInfo(models.Model):
 
 
 class SpendingInfo(models.Model):
-    name = models.TextField(verbose_name='支出明细')
     amount = models.IntegerField(default=0, verbose_name="支出费用")
+    spending_type = models.CharField(max_length=10, verbose_name="支出类型")
     spend_date = models.DateField(verbose_name="流水时间")
+    detail = models.TextField(verbose_name='支出明细', default="")
 
     class Meta:
         db_table = 'spending'
@@ -124,7 +125,7 @@ class SpendingInfo(models.Model):
         verbose_name_plural = verbose_name
 
     def __str__(self):
-        return self.name
+        return f'{self.spending_type}'
 
 
 class TopUpInfo(models.Model):

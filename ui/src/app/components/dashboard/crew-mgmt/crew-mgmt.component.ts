@@ -133,12 +133,9 @@ export class CrewMgmtComponent implements OnInit {
       }).subscribe((data)=>{this.ngOnInit();});
     }
     this.close();
-    this.form.reset();
-    this.form.patchValue({"gender":true});
   }
 
   confirm(){
-    //do delete
     this.req.baseDelete(this.enterPoint,this.operateStaff.id).subscribe(res=>this.ngOnInit());
     this.close();
   }

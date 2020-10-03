@@ -1,0 +1,16 @@
+<span class="count">当前共有{{topUpRecords.length}}条充值记录</span>
+<table class="table table-striped "[hidden]="!topUpRecords.length">
+    <thead>
+      <tr>
+        <th *ngFor="let item of tHead" scope="col">{{item}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let record of topUpRecords">
+        <td>{{record.id}}</td>
+        <td>{{record.member}}</td>
+        <td>{{record.topup_date}}</td>
+        <td>{{record.amount}}元</td>
+      </tr>
+    </tbody>
+  </table>

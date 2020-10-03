@@ -1,0 +1,13 @@
+<div class="main container table-responsive">
+    <br>
+    <mat-toolbar>
+        <ul class="nav nav-fill">
+            <li class="nav-item" *ngFor="let link of navLinks; let i = index">
+              <a class="nav-link" [ngClass]="{'active': i == activeIdx}"  (click)="changeTab(i)">{{link.label}}</a>
+            </li>
+          </ul>
+    </mat-toolbar>
+    <hr>
+    <router-outlet></router-outlet>
+</div>
+

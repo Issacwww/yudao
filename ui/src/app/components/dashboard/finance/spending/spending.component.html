@@ -1,0 +1,59 @@
+<ng-template #addNewSpendingRecordTemplate>
+    <mat-dialog-content [formGroup]="form">
+      <p>
+        <mat-form-field appearance="fill">
+            <mat-label>支出类型</mat-label>
+            <mat-select formControlName="spending_type" required>
+              <mat-option *ngFor="let type of spendingTypes" [value]="type">
+                {{type}}
+              </mat-option>
+            </mat-select>
+        </mat-form-field>
+      </p>
+
+      <p>
+        <mat-form-field>
+          <mat-label>支出金额</mat-label>
+          <input matInput placeholder="支出金额" name="amount" formControlName="amount" >
+        </mat-form-field>
+      </p>
+      <p>
+        <mat-form-field>
+          <mat-label>支出明细</mat-label>
+          <input type="text" matInput placeholder="支出明细" name="detail" formControlName="detail">
+        </mat-form-field>
+      </p>
+     
+      
+    </mat-dialog-content>
+  
+    <mat-dialog-actions>
+        <button mat-raised-button color="primary"(click)="save()">保存</button>
+        <button mat-raised-button (click)="close()">关闭</button>
+    </mat-dialog-actions>
+    
+  </ng-template>
+
+<mat-toolbar>
+    <span class="count">当前共有{{spends.length}}条开支记录</span>
+    <span class="spacer"></span>
+    <button mat-stroked-button color="primary" type="button" (click)="newSpending()">记录开支</button>
+    
+</mat-toolbar >
+<hr>
+<table class="table table-striped "[hidden]="!spends.length">
+    <thead>
+      <tr>
+        <th *ngFor="let item of tHead" scope="col">{{item}}</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let spend of spends">
+        <td>{{spend.id}}</td>
+        <td>{{spend.spending_type}}</td>
+        <td>{{spend.spend_date}}</td>
+        <td>{{spend.amount}}元</td>
+        <td>{{spend.detail}}</td>
+      </tr>
+    </tbody>
+  </table>

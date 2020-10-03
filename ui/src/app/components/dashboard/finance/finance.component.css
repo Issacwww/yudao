@@ -1,0 +1,8 @@
+a{
+    color: #778899;
+    font-size: large;
+}
+.nav-link.active{
+    color: white;
+    background-color: #3f51b5;
+}
