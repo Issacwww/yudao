@@ -1,8 +1,10 @@
 import { Component, OnInit, ViewChild, TemplateRef  } from '@angular/core';
-import { Service } from './service';
 import { FormGroup, FormBuilder } from '@angular/forms';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
 import { DialogService, DialogFactoryService, DialogData } from '../../../modules/dialog';
-import { RequestService, DateService, FilterService, StorageService} from '../../../services';
+import { RequestService } from '../../../services';
 
 @Component({
   selector: 'app-service-mgmt',
@@ -12,13 +14,9 @@ import { RequestService, DateService, FilterService, StorageService} from '../..
 export class ServiceMgmtComponent implements OnInit {
 
   private enterPoint = 'services/';
-  public services : Service[] = [];
-  tHead = ['项目名称','项目时长','项目价格','操作'];
   form: FormGroup;
   isInsert: boolean;
-  query: string = '';
   dialog: DialogService;
-  hasService: boolean;
   operateService: Service;
   @ViewChild('ServiceTemplate')
   ServiceTemplate: TemplateRef<any>;
@@ -27,13 +25,16 @@ export class ServiceMgmtComponent implements OnInit {
   confirmTemplate: TemplateRef<any>;
   confirmMessage:string;
 
+  dataSource = new MatTableDataSource<any>();
+  serviceCount = 0;
+  displayedColumns = ['name','duration','price','operation'];
+  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+
   constructor(
     private dialogFactoryService: DialogFactoryService,
     private formBuilder: FormBuilder,
-    private req: RequestService,
-    private date: DateService,
-    private filter: FilterService,
-    private storage: StorageService
+    private req: RequestService
   ) { }
 
   ngOnInit(): void {
@@ -57,6 +58,7 @@ export class ServiceMgmtComponent implements OnInit {
    * CURD functions
    */
   insertService():void{
+    this.form.reset()
     this.isInsert = true;
     this.openServiceDialog();
   }
@@ -76,21 +78,16 @@ export class ServiceMgmtComponent implements OnInit {
   
   getServiceList():void {
     this.req.baseGet(this.enterPoint).subscribe((serviceList) => {
-      this.services = serviceList as Service[];
-      this.services.sort((a, b) => a.id < b.id ? -1 : 1)
-      this.storage.set('services', this.services);
-      this.hasService = serviceList.length > 0;
+      this.serviceCount = serviceList.length;
+      this.dataSource.data = serviceList;
+      this.dataSource.sort = this.sort;
+      this.dataSource.paginator = this.paginator;
     })
   } 
 
-  search(){
-    this.services = this.filter.processQuery(this.storage.get('services'), "", this.query);
-    this.query = '';
-  }
+  
 
   reset(){
-    this.query = '';
-    this.services = this.storage.get('services');
   }
 
   /**
@@ -117,16 +114,14 @@ export class ServiceMgmtComponent implements OnInit {
     //todo: call api to save, add loading, then 
     if(this.isInsert){
       //insert
-      let newMember = this.form.value;
-      newMember['open_date'] = this.date.today();
-      this.req.basePost(this.enterPoint,newMember).subscribe((res)=>this.ngOnInit())
+      let newService = this.form.value;
+      this.req.basePost(this.enterPoint,newService).subscribe((res)=>this.ngOnInit())
     }else{
       //patch
       this.req.basePatch(this.enterPoint+this.operateService.id+"/",this.form.value)
           .subscribe((data)=>{this.ngOnInit()});
     }
     this.close();
-    this.form.reset();
   }
 
   confirm(){
@@ -141,4 +136,11 @@ export class ServiceMgmtComponent implements OnInit {
   private openDialog(dialogData: DialogData): void {
     this.dialog = this.dialogFactoryService.open(dialogData);
   }
+}
+
+export interface Service {
+  id: Number;
+  name: String;
+  duration: number;
+  price: number;
 }

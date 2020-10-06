@@ -35,7 +35,7 @@ class LoginView(APIView):
 
 class MemberInfoModelViewSet(ModelViewSet):
     serializer_class = MemberInfoModelSerializer
-    queryset = MemberInfo.objects.all()
+    queryset = MemberInfo.objects.order_by('card_number')
 
 
 class ServiceInfoModelViewSet(ModelViewSet):
@@ -45,7 +45,7 @@ class ServiceInfoModelViewSet(ModelViewSet):
 
 class CrewInfoModelViewSet(ModelViewSet):
     serializer_class = CrewInfoModelSerializer
-    queryset = CrewInfo.objects.all()
+    queryset = CrewInfo.objects.order_by('crew_number')
 
 
 class SpendingInfoModelViewSet(ModelViewSet):
@@ -58,6 +58,11 @@ class RoomInfoModelViewSet(ModelViewSet):
     queryset = RoomInfo.objects.all()
 
 
-class TopUpInfoModelViewSet(ModelViewSet):
-    serializer_class = TopUpInfoModelSerializer
+class TopUpInfoModelGetViewSet(ModelViewSet):
+    serializer_class = TopUpInfoGetSerializer
+    queryset = TopUpInfo.objects.all()
+
+
+class TopUpInfoModelPostViewSet(ModelViewSet):
+    serializer_class = TopUpInfoPostSerializer
     queryset = TopUpInfo.objects.all()

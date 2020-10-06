@@ -1,1 +1,71 @@
-<p>rooms works!</p>
+<ng-template #addNewRoomTemplate>
+    <mat-dialog-content [formGroup]="form">
+      <p>
+        <mat-form-field>
+          <mat-label>客房名称</mat-label>
+          <input matInput placeholder="客房名称" name="name" formControlName="name">
+        </mat-form-field>
+      </p>
+      <p>
+        <mat-form-field>
+          <mat-label>床位数量</mat-label>
+          <input matInput placeholder="床位数量" name="bed_count" formControlName="bed_count">
+        </mat-form-field>
+      </p>
+      
+    </mat-dialog-content>
+  
+    <mat-dialog-actions>
+        <button mat-raised-button color="primary"(click)="save()">保存</button>
+        <button mat-raised-button (click)="close()">关闭</button>
+    </mat-dialog-actions>
+    
+  </ng-template>
+  
+  <div class="main container table-responsive">
+      <br>  
+        <mat-toolbar>
+            <span class="count">当前共有{{roomCount}}间客房</span>
+            <span class="spacer"></span>
+            <button mat-stroked-button color="primary" type="button" (click)="insertRoom()">新增客房</button>
+          </mat-toolbar >
+          <mat-table #table matSort [dataSource]="dataSource">
+            <ng-container matColumnDef="id">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> 客房编号 </mat-header-cell>
+              <mat-cell *matCellDef="let element">{{element.id}}</mat-cell>
+            </ng-container>
+          
+            <ng-container matColumnDef="name">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> 客房名称 </mat-header-cell>
+              <mat-cell *matCellDef="let element">{{element.name}}</mat-cell>
+            </ng-container>
+          
+            <ng-container matColumnDef="bed_count">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> 床位总数 </mat-header-cell>
+              <mat-cell *matCellDef="let element">{{element.bed_count}}</mat-cell>
+            </ng-container>
+            
+            <ng-container matColumnDef="operation">
+              <mat-header-cell *matHeaderCellDef mat-sort-header> 操作 </mat-header-cell>
+              <mat-cell *matCellDef="let element">
+                <button mat-icon-button [matMenuTriggerFor]="menu">
+                  <mat-icon>settings</mat-icon>
+                </button>
+                <mat-menu #menu="matMenu">
+                    <ng-template matMenuContent>
+                      <button mat-menu-item type="button" (click)="updateRoom(element)">更新信息</button>
+                    </ng-template>
+                  </mat-menu>
+              </mat-cell>
+            </ng-container>
+          
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns;"
+                    matRipple 
+                    class="element-row">
+            </mat-row>
+          </mat-table>
+          <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+        
+  </div>
+  

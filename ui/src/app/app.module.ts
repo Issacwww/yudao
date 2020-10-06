@@ -5,6 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from './material-module';
+import { MatPaginatorIntl } from '@angular/material/paginator';
 import { LoginModule, DialogModule } from './modules';
 
 // Components
@@ -16,7 +17,7 @@ import { DashboardComponent, MemberMgmtComponent,
   FinanceComponent, TopupComponent, SpendingComponent, OrderComponent } from './components';
 
 // Services
-import { RequestService,StorageService,DateService,FilterService } from './services';
+import { RequestService,StorageService,DateService,FilterService,getChinesePaginatorIntl } from './services';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,9 @@ import { RequestService,StorageService,DateService,FilterService } from './servi
     BrowserAnimationsModule,
     MaterialModule
   ],
-  providers: [RequestService, StorageService, DateService, FilterService],
+  providers: [RequestService, StorageService, DateService, FilterService,
+    { provide: MatPaginatorIntl, useValue: getChinesePaginatorIntl() }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

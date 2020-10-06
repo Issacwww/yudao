@@ -1,8 +1,16 @@
 import { Component, OnInit, ViewChild, TemplateRef  } from '@angular/core';
-import { Crew } from './crew';
 import { FormGroup, FormBuilder } from '@angular/forms';
+
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
+
+
 import { DialogService, DialogFactoryService, DialogData } from '../../../modules/dialog';
 import { RequestService, DateService, FilterService, StorageService} from '../../../services';
+
+
 
 @Component({
   selector: 'app-crew-mgmt',
@@ -12,12 +20,13 @@ import { RequestService, DateService, FilterService, StorageService} from '../..
 export class CrewMgmtComponent implements OnInit {
 
   private enterPoint = 'crew/';
-  public crew : Crew[] = [];
-  tHead = ['技师工号','技师姓名','技师性别','身份证号','联系方式','入职日期','操作'];
+  dataSource = new MatTableDataSource<any>();
+  crewCount = 0;
+  displayedColumns = ['crew_number','name','gender','national_id','phone','hire_date','operation'];
   genders = [{value:true, label:'男技师'},{value:false, label:'女技师'}];
+  displayGender = (flag) => flag ? '男技师' : '女技师';
   form: FormGroup;
   isInsert: boolean;
-  query: string = '';
   operateStaff: Crew;
   hasCrew = false;
 
@@ -28,6 +37,9 @@ export class CrewMgmtComponent implements OnInit {
   @ViewChild('confirmTemplate')
   confirmTemplate: TemplateRef<any>;
   confirmMessage:string;
+
+  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(
     private dialogFactoryService: DialogFactoryService,
@@ -63,6 +75,8 @@ export class CrewMgmtComponent implements OnInit {
    * CURD functions
    */
   insertStaff():void{
+    this.form.reset();
+    this.form.patchValue({'gender':true});
     this.isInsert = true;
     this.openStaffDialog();
   }
@@ -82,21 +96,15 @@ export class CrewMgmtComponent implements OnInit {
 
   getCrew():void {
     this.req.baseGet(this.enterPoint).subscribe(crewList => {
-      this.crew = crewList as Crew[];
-      this.crew.sort((a, b) => a.crew_number < b.crew_number ? -1 : 1)
-      this.storage.set('crew', this.crew);
-      this.hasCrew = crewList.length > 0;
+      this.crewCount = crewList.length;
+      this.dataSource.data = crewList;
+      this.dataSource.sort = this.sort;
+      this.dataSource.paginator = this.paginator;
     })
   } 
 
-  search(){
-    this.crew = this.filter.processQuery(this.storage.get('crew'), "crew_number", this.query);
-    this.query = '';
-  }
 
   reset(){
-    this.query = '';
-    this.crew = this.storage.get('crew');
   }
 
   /**
@@ -147,4 +155,14 @@ export class CrewMgmtComponent implements OnInit {
   private openDialog(dialogData: DialogData): void {
     this.dialog = this.dialogFactoryService.open(dialogData);
   }
+}
+
+export interface Crew {
+  id: Number;
+  name: String;
+  gender: Boolean;
+  national_id:String;
+  phone: String;
+  crew_number: String;
+  hire_date: Date;
 }

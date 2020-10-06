@@ -15,7 +15,6 @@ export class RequestService {
 
   basePost(path, data): Observable<any>{
     data['responseType'] = 'json';
-    console.log(data);
     return this.http.post(this.baseAPI + path, data);
   }
 

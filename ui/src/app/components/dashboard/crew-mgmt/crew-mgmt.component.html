@@ -55,51 +55,64 @@
   </ng-template>
   
   <div class="main container table-responsive">
-      <br>  
-      <mat-toolbar>
-          <span class="count">当前共有{{crew.length}}位技师</span>
-          <span class="spacer"></span>
-          <button mat-stroked-button color="primary" type="button" (click)="insertStaff()">新增技师</button>
-     
-      </mat-toolbar >
+    <br>
+    <mat-toolbar>
+      <span class="count">当前共有{{crewCount}}位技师</span>
+      <span class="spacer"></span>
+      <button mat-stroked-button color="primary" type="button" (click)="insertStaff()">新增技师</button>
+    </mat-toolbar >
+    <mat-table #table matSort [dataSource]="dataSource">
+      <ng-container matColumnDef="crew_number">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> 技师工号 </mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.crew_number}}</mat-cell>
+      </ng-container>
+    
+      <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> 技师姓名 </mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.name}}</mat-cell>
+      </ng-container>
+    
+      <ng-container matColumnDef="gender">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> 技师性别 </mat-header-cell>
+        <mat-cell *matCellDef="let element">{{displayGender(element.gender)}}</mat-cell>
+      </ng-container>
+    
+      <ng-container matColumnDef="national_id">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> 身份证号 </mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.national_id}}</mat-cell>
+      </ng-container>
       
-      <hr>
-      <mat-toolbar [hidden]="!hasCrew">
-          <input type="text" class="form-control form-control-dark" placeholder="使用姓名 / 工号搜索技师" [(ngModel)]="query" aria-label="搜索"> &nbsp; &nbsp;
-          <button mat-raised-button color="primary" (click)="search()" >搜索</button>
-          <button mat-raised-button (click)="reset()">重置</button>
-      </mat-toolbar>
-  
+      <ng-container matColumnDef="phone">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> 联系方式 </mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.phone}}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="hire_date">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> 入职日期 </mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.hire_date}}</mat-cell>
+      </ng-container>
       
-      <table class="table table-striped "[hidden]="!crew.length">
-          <thead>
-            <tr>
-              <th *ngFor="let item of tHead" scope="col">{{item}}</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let staff of crew">
-              <td>{{staff.crew_number}}</td>
-              <td>{{staff.name}}</td>
-              <td *ngIf="staff.gender">男技师</td>
-              <td *ngIf="!staff.gender">女技师</td>
-              <td>{{staff.national_id}}</td>
-              <td>{{staff.phone}}</td>
-              <td>{{staff.hire_date}}</td>
-              <td>
-                <button mat-icon-button [matMenuTriggerFor]="menu">
-                  <mat-icon>settings</mat-icon>
-                </button>
-                <mat-menu #menu="matMenu">
-                  <ng-template matMenuContent>
-                    <button mat-menu-item type="button" (click)="updateHiredStaff(staff)">更新信息</button>
-                    <button mat-menu-item type="button" (click)="deleteStaff(staff)">删除技师</button>
-                  </ng-template>
-                </mat-menu>
-                </td>
-            </tr>
-          </tbody>
-        </table>
-  
+      <ng-container matColumnDef="operation">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> 操作 </mat-header-cell>
+        <mat-cell *matCellDef="let element">
+          <button mat-icon-button [matMenuTriggerFor]="menu">
+            <mat-icon>settings</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu">
+            <ng-template matMenuContent>
+              <button mat-menu-item type="buttoxn" (click)="updateHiredStaff(element)">更新信息</button>
+              <button mat-menu-item type="button" (click)="deleteStaff(element)">删除技师</button>
+            </ng-template>
+          </mat-menu>
+        </mat-cell>
+      </ng-container>
+    
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"
+              matRipple 
+              class="element-row">
+      </mat-row>
+    </mat-table>
+    <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
   </div>
   

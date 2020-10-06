@@ -1,8 +1,11 @@
 import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
-import { Member } from './member';
 import { FormGroup, FormBuilder } from '@angular/forms';
 import { DialogService, DialogFactoryService, DialogData } from '../../../modules/dialog';
 import { RequestService, DateService, FilterService, StorageService} from '../../../services';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
+
 @Component({
   selector: 'app-member-mgmt',
   templateUrl: './member-mgmt.component.html',
@@ -12,11 +15,13 @@ export class MemberMgmtComponent implements OnInit {
 
   private enterPoint = 'members/';
   public members : Member[] = [];
-  tHead = ['会员卡号','会员姓名','会员性别','联系方式','办理日期','当前余额','操作'];
+  dataSource = new MatTableDataSource<any>();
+  memberCount = 0;
   genders = [{value:true, label:'男宾'},{value:false, label:'女宾'}];
+  displayedColumns = ['card_number','name','gender','phone','open_date','balance','operation'];
+  displayGender = (flag) => flag ? '男宾' : '女宾';
   form: FormGroup;
   mode: boolean;
-  query: string = '';
   topUpAmount: number;
   operateMember: Member;
   isTopUp: boolean = false;
@@ -31,6 +36,9 @@ export class MemberMgmtComponent implements OnInit {
   @ViewChild('confirmTemplate')
   confirmTemplate: TemplateRef<any>;
   confirmMessage:string;
+
+  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
 
   constructor(
     private dialogFactoryService: DialogFactoryService,
@@ -66,6 +74,8 @@ export class MemberMgmtComponent implements OnInit {
    * CURD functions
    */
   insertMember():void{
+    this.form.reset();
+    this.form.patchValue({'gender':true});
     this.toggleMemberDialog(0);
   }
 
@@ -82,30 +92,24 @@ export class MemberMgmtComponent implements OnInit {
   }
 
   topUpForExistedMember(topUpMember:Member):void{
+    this.topUpAmount = null;
     this.isTopUp = true;
     this.operateMember = topUpMember;
     this.confirmMessage = `确认为会员${topUpMember.name}充值`;
     this.openTopUpDialog(topUpMember);
-    
   }
 
   getAllMembers():void {
     this.req.baseGet(this.enterPoint).subscribe(memberList => {
-      this.members = memberList as Member[];
-      this.members.sort((a, b) => a.card_number < b.card_number ? -1 : 1)
-      this.storage.set('members', this.members);
-      this.hasMember = memberList.length > 0;
+      this.memberCount = memberList.length;
+      this.dataSource.data = memberList;
+      this.dataSource.sort = this.sort;
+      this.dataSource.paginator = this.paginator;
     })
   } 
 
-  search(){
-    this.members = this.filter.processQuery(this.storage.get('members'), "card_number", this.query);
-    this.query = '';
-  }
-
+  
   reset(){
-    this.query = '';
-    this.members = this.storage.get('members');
   }
 
   /**
@@ -145,7 +149,15 @@ export class MemberMgmtComponent implements OnInit {
       //insert
       let newMember = this.form.value;
       newMember['open_date'] = this.date.today();
-      this.req.basePost(this.enterPoint,newMember).subscribe((res)=>this.ngOnInit());
+      this.req.basePost(this.enterPoint,newMember).subscribe(res=>{
+        this.req.basePost("postTopUp/",{
+          member: res.id,
+          amount: res.balance,
+          topup_date: res.open_date
+        }).subscribe((data)=>{
+          this.ngOnInit();
+        })
+      });
     }else{
       //patch
       this.req.basePatch(this.enterPoint+this.operateMember.id+"/",{
@@ -154,8 +166,6 @@ export class MemberMgmtComponent implements OnInit {
       }).subscribe((data)=>{this.ngOnInit()});
     }
     this.close();
-    this.form.reset();
-    this.form.patchValue({"gender":true});
   }
 
   topUp(){
@@ -169,7 +179,7 @@ export class MemberMgmtComponent implements OnInit {
       this.req.basePatch(this.enterPoint+this.operateMember.id+"/",{
         balance:+this.operateMember.balance + +this.topUpAmount
       }).subscribe((data)=>{
-        this.req.basePost("topup/",{
+        this.req.basePost("postTopUp/",{
           member: this.operateMember.id,
           amount: +this.topUpAmount,
           topup_date: this.date.today()
@@ -188,4 +198,14 @@ export class MemberMgmtComponent implements OnInit {
     this.dialog.close();
   }
 
+}
+
+export interface Member {
+  id: Number;
+  name: String;
+  gender: Boolean;
+  phone: String;
+  card_number: String;
+  open_date: Date;
+  balance: number;
 }

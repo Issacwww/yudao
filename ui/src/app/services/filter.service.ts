@@ -18,7 +18,7 @@ export class FilterService {
       if(query === null || query === ''){
           return input;
       }
-      if(isNaN(parseInt(query))){
+      if(isNaN(parseInt(query)) || (fieldName === null || fieldName === '')){
           return this.filterByName(input, query);
       }
       return this.filterByNumber(input, fieldName, query);

@@ -1,8 +1,10 @@
 import { Component, OnInit, ViewChild, TemplateRef  } from '@angular/core';
-import { Spending } from './spending';
 import { FormGroup, FormBuilder } from '@angular/forms';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
 import { DialogService, DialogFactoryService, DialogData } from 'src/app/modules/dialog';
-import { RequestService,StorageService,DateService } from 'src/app/services';
+import { RequestService, DateService } from 'src/app/services';
 
 @Component({
   selector: 'app-spending',
@@ -12,20 +14,30 @@ import { RequestService,StorageService,DateService } from 'src/app/services';
 export class SpendingComponent implements OnInit {
 
   enterPoint='spending/'
-  spends = [];
-  tHead = ['支出编号','支出类型','支出日期','支出金额','支出明细']
+  spends = new MatTableDataSource<Spending>();
+  spendsCount = 0;
+  displayedColumns = ['id', 'spending_type','spend_date','amount','detail'];
   spendingTypes = ['水电费','店铺租金','伙食费','其他']
   dialog: DialogService;
+  expandedElement: any;
+
   @ViewChild('addNewSpendingRecordTemplate')
   addNewSpendingRecordTemplate: TemplateRef<any>;
+
+  @ViewChild('confirmTemplate')
+  confirmTemplate: TemplateRef<any>;
+  confirmMessage:string;
+
+  @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  //todo: add filter
 
   form: FormGroup;
   constructor(
     private dialogFactoryService: DialogFactoryService,
     private formBuilder: FormBuilder,
     private req: RequestService,
-    private date: DateService,
-    private storage: StorageService
+    private date: DateService
   ) { }
 
   ngOnInit(): void {
@@ -39,11 +51,15 @@ export class SpendingComponent implements OnInit {
 
   getAllSpending(){
     this.req.baseGet(this.enterPoint).subscribe(spendingList => {
-      this.spends = spendingList as Spending[];
-      this.spends.sort((a, b) => a.spend_date > b.spend_date ? -1 : 1);
-      this.storage.set('spends', this.spends);
+      this.spendsCount = spendingList.length;
+      this.spends.data = spendingList;
+      this.spends.sort = this.sort;
+      this.spends.paginator = this.paginator;
     })
   }
+
+  isExpansionDetailRow = (i: number, row: Object) => row.hasOwnProperty('detailRow');
+  
 
   newSpending(){
     this.openDialog({
@@ -67,3 +83,12 @@ export class SpendingComponent implements OnInit {
     this.dialog = this.dialogFactoryService.open(dialogData);
   }
 }
+
+export interface Spending{
+  id: number;
+  spending_type: String;
+  detail: String;
+  amount: number;
+  spend_date: Date;
+}
+

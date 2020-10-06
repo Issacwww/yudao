@@ -13,3 +13,7 @@ export class OrderComponent implements OnInit {
   }
 
 }
+
+export interface Order{
+  
+}

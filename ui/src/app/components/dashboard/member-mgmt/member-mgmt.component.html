@@ -72,50 +72,65 @@
 </ng-template>
 
 <div class="main container table-responsive">
-    <br>  
+    <br>
     <mat-toolbar>
-        <span class="count">当前共有{{members.length}}位会员</span>
-        <span class="spacer"></span>
-        <button mat-stroked-button color="primary" type="button" (click)="insertMember()">新增会员</button>
-   
-      </mat-toolbar >
+      <span class="count">当前共有{{memberCount}}位会员</span>
+      <span class="spacer"></span>
+      <button mat-stroked-button color="primary" type="button" (click)="insertMember()">新增会员</button>
+    </mat-toolbar >
+    <mat-table #table matSort [dataSource]="dataSource">
+      <ng-container matColumnDef="card_number">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> 会员卡号 </mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.card_number}}</mat-cell>
+      </ng-container>
     
-    <hr>
-    <mat-toolbar [hidden]="!hasMember">
-        <input type="text" class="form-control form-control-dark" placeholder="使用姓名 / 卡号搜索会员" [(ngModel)]="query" aria-label="搜索"> &nbsp; &nbsp;
-        <button mat-raised-button color="primary" (click)="search()" >搜索</button>
-        <button mat-raised-button (click)="reset()">重置</button>
-    </mat-toolbar>
+      <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> 会员姓名 </mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.name}}</mat-cell>
+      </ng-container>
     
-    <table class="table table-striped "[hidden]="!members.length">
-        <thead>
-          <tr>
-            <th *ngFor="let item of tHead" scope="col">{{item}}</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let member of members">
-            <td>{{member.card_number}}</td>
-            <td>{{member.name}}</td>
-            <td *ngIf="member.gender">男宾</td>
-            <td *ngIf="!member.gender">女宾</td>
-            <td>{{member.phone}}</td>
-            <td>{{member.open_date}}</td>
-            <td>{{member.balance}}元</td>
-            <td>
-              <button mat-icon-button [matMenuTriggerFor]="menu">
-                <mat-icon>settings</mat-icon>
-              </button>
-              <mat-menu #menu="matMenu">
-                <ng-template matMenuContent>
-                  <button mat-menu-item type="button" (click)="topUpForExistedMember(member)">充值金额</button>
-                  <button mat-menu-item type="button" (click)="updateExistedMember(member)">更新信息</button>
-                  <button mat-menu-item type="button" (click)="deleteMember(member)">删除会员</button>
-                </ng-template>
-              </mat-menu>
-              </td>
-          </tr>
-        </tbody>
-      </table>
+      <ng-container matColumnDef="gender">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> 会员性别 </mat-header-cell>
+        <mat-cell *matCellDef="let element">{{displayGender(element.gender)}}</mat-cell>
+      </ng-container>
+      
+      <ng-container matColumnDef="phone">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> 联系方式 </mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.phone}}</mat-cell>
+      </ng-container>
 
+      <ng-container matColumnDef="open_date">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> 办理日期 </mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.open_date}}</mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="balance">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> 当前余额 </mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.balance}} 元</mat-cell>
+      </ng-container>
+      
+      <ng-container matColumnDef="operation">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> 操作 </mat-header-cell>
+        <mat-cell *matCellDef="let member">
+          <button mat-icon-button [matMenuTriggerFor]="menu">
+            <mat-icon>settings</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu">
+            <ng-template matMenuContent>
+              <button mat-menu-item type="button" (click)="topUpForExistedMember(member)">充值金额</button>
+              <button mat-menu-item type="button" (click)="updateExistedMember(member)">更新信息</button>
+              <button mat-menu-item type="button" (click)="deleteMember(member)">删除会员</button>
+            </ng-template>
+          </mat-menu>
+        </mat-cell>
+      </ng-container>
+    
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"
+              matRipple 
+              class="element-row">
+      </mat-row>
+    </mat-table>
+    <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+  
 </div>

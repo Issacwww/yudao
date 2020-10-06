@@ -1,16 +1,35 @@
-<span class="count">当前共有{{topUpRecords.length}}条充值记录</span>
-<table class="table table-striped "[hidden]="!topUpRecords.length">
-    <thead>
-      <tr>
-        <th *ngFor="let item of tHead" scope="col">{{item}}</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let record of topUpRecords">
-        <td>{{record.id}}</td>
-        <td>{{record.member}}</td>
-        <td>{{record.topup_date}}</td>
-        <td>{{record.amount}}元</td>
-      </tr>
-    </tbody>
-  </table>
+<mat-toolbar>
+  <span class="count">当前共有{{topUpCount}}条充值记录</span>
+  <span class="spacer"></span>
+</mat-toolbar >
+<hr>
+<mat-table #table matSort [dataSource]="topUpRecords">
+
+  <ng-container matColumnDef="id">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> 充值订单编号 </mat-header-cell>
+    <mat-cell *matCellDef="let element">{{element.id}}</mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="member">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> 会员信息 </mat-header-cell>
+    <mat-cell *matCellDef="let element">{{element.member}}</mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="topup_date">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> 充值日期 </mat-header-cell>
+    <mat-cell *matCellDef="let element">{{element.topup_date}}</mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="amount">
+    <mat-header-cell *matHeaderCellDef mat-sort-header> 充值金额 </mat-header-cell>
+    <mat-cell *matCellDef="let element">{{element.amount}} 元</mat-cell>
+  </ng-container>
+  
+
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row *matRowDef="let row; columns: displayedColumns;"
+          matRipple 
+          class="element-row">
+  </mat-row>
+</mat-table>
+<mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
