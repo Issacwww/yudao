@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
+import { Member } from '../../models';
 import { DialogService, DialogFactoryService, DialogData } from '../../../modules/dialog';
 import { RequestService, DateService, FilterService, StorageService} from '../../../services';
 import { MatSort } from '@angular/material/sort';
@@ -14,6 +15,7 @@ import { MatPaginator } from '@angular/material/paginator';
 export class MemberMgmtComponent implements OnInit {
 
   private enterPoint = 'members/';
+  private topUpEnterPoint = 'topUp/';//postTopUp
   public members : Member[] = [];
   dataSource = new MatTableDataSource<any>();
   memberCount = 0;
@@ -150,7 +152,7 @@ export class MemberMgmtComponent implements OnInit {
       let newMember = this.form.value;
       newMember['open_date'] = this.date.today();
       this.req.basePost(this.enterPoint,newMember).subscribe(res=>{
-        this.req.basePost("postTopUp/",{
+        this.req.basePost(this.topUpEnterPoint,{
           member: res.id,
           amount: res.balance,
           topup_date: res.open_date
@@ -179,7 +181,7 @@ export class MemberMgmtComponent implements OnInit {
       this.req.basePatch(this.enterPoint+this.operateMember.id+"/",{
         balance:+this.operateMember.balance + +this.topUpAmount
       }).subscribe((data)=>{
-        this.req.basePost("postTopUp/",{
+        this.req.basePost(this.topUpEnterPoint,{
           member: this.operateMember.id,
           amount: +this.topUpAmount,
           topup_date: this.date.today()
@@ -198,14 +200,4 @@ export class MemberMgmtComponent implements OnInit {
     this.dialog.close();
   }
 
-}
-
-export interface Member {
-  id: Number;
-  name: String;
-  gender: Boolean;
-  phone: String;
-  card_number: String;
-  open_date: Date;
-  balance: number;
 }

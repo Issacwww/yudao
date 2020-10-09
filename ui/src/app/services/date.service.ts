@@ -14,5 +14,11 @@ export class DateService {
     return year + '-' + month + '-' + day;
   };
 
-  
+  minsAfterMoment(Moment,minutes){
+    return new Date(Moment.getTime() + 60000*minutes);
+  }
+
+  praseTimeToDisplay(date){
+    return date.toLocaleString("zh-CN", {timeZone: "Asia/Shanghai"}) 
+  }
 }

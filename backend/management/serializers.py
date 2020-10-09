@@ -89,16 +89,27 @@ class SpendingInfoModelSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 
-class TopUpInfoPostSerializer(serializers.ModelSerializer):
+class TopUpInfoSerializer(serializers.ModelSerializer):
+
+    def to_representation(self, instance):
+        rep = super(TopUpInfoSerializer, self).to_representation(instance)
+        rep['member'] = f'No.{instance.member.card_number} {instance.member.name}'
+        return rep
 
     class Meta:
         model = TopUpInfo
         fields = "__all__"
 
 
-class TopUpInfoGetSerializer(serializers.ModelSerializer):
-    member = serializers.StringRelatedField(read_only=True)
+class CustomerOrderSerializer(serializers.ModelSerializer):
+
+    def to_representation(self, instance):
+        rep = super(CustomerOrder, self).to_representation(instance)
+        rep['staff'] = f'No.{instance.staff.card_number} {instance.staff.name}'
+        rep['room'] = instance.room.name
+        rep['service'] = instance.service.name
+        return rep
 
     class Meta:
-        model = TopUpInfo
+        model = CustomerOrder
         fields = "__all__"

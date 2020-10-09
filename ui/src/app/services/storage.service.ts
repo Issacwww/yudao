@@ -15,6 +15,14 @@ export class StorageService {
       sessionStorage.setItem(key, JSON.stringify(value));
   }
 
+  setMap(key:string, value: Map<any, any>) {
+    sessionStorage.setItem(key, JSON.stringify(Array.from(value.entries())));
+  }
+
+  getMap(key:string){
+    return new Map(JSON.parse(sessionStorage.getItem(key)));
+  }
+
   clear(){
     sessionStorage.clear();
   }

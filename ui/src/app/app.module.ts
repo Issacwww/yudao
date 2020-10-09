@@ -17,7 +17,7 @@ import { DashboardComponent, MemberMgmtComponent,
   FinanceComponent, TopupComponent, SpendingComponent, OrderComponent } from './components';
 
 // Services
-import { RequestService,StorageService,DateService,FilterService,getChinesePaginatorIntl } from './services';
+import { RequestService,StorageService,DateService,FilterService,getChinesePaginatorIntl,AvailablePipe } from './services';
 
 @NgModule({
   declarations: [
@@ -32,7 +32,8 @@ import { RequestService,StorageService,DateService,FilterService,getChinesePagin
     OrderComponent,
     RoomMgmtComponent,
     ServeComponent,
-    StatisticComponent
+    StatisticComponent,
+    AvailablePipe
   ],
   imports: [
     BrowserModule,

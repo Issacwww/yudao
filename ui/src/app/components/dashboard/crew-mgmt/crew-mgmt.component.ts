@@ -1,16 +1,13 @@
 import { Component, OnInit, ViewChild, TemplateRef  } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
 
-import { animate, state, style, transition, trigger } from '@angular/animations';
+import { Crew } from '../../models';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 
-
 import { DialogService, DialogFactoryService, DialogData } from '../../../modules/dialog';
 import { RequestService, DateService, FilterService, StorageService} from '../../../services';
-
-
 
 @Component({
   selector: 'app-crew-mgmt',
@@ -155,14 +152,4 @@ export class CrewMgmtComponent implements OnInit {
   private openDialog(dialogData: DialogData): void {
     this.dialog = this.dialogFactoryService.open(dialogData);
   }
-}
-
-export interface Crew {
-  id: Number;
-  name: String;
-  gender: Boolean;
-  national_id:String;
-  phone: String;
-  crew_number: String;
-  hire_date: Date;
 }

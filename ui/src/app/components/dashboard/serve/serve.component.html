@@ -1,1 +1,67 @@
-<p>serve works!</p>
+<ng-template #confirmTemplate>
+  <mat-dialog-content>
+    <p>{{confirmMessage}}</p>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <button mat-raised-button color="primary"(click)="close()">取消</button>
+  </mat-dialog-actions>
+</ng-template>
+
+<ng-template #serveTemplate>
+    <mat-dialog-content [formGroup]="form">
+      <p>
+        <mat-checkbox name="isMemberOrder" formControlName="isMemberOrder">会员客户</mat-checkbox>
+        <span class="spacer"></span>
+        <mat-form-field>
+          <mat-label>会员卡号</mat-label>
+          <input matInput placeholder="会员卡号" name="card_number" formControlName="card_number" >
+        </mat-form-field>
+      </p>
+     
+      
+      <p>
+        <mat-form-field>
+          <mat-label>选择服务项目</mat-label>
+          <mat-select formControlName="service" required>
+            <mat-option *ngFor="let service of services | keyvalue" [value]="service.key">
+              {{service.value.name}}
+            </mat-option>
+          </mat-select>
+          <!-- <input matInput placeholder="联系方式" name="phone" formControlName="phone"> -->
+        </mat-form-field>
+      </p>
+      <p>
+        <mat-form-field>
+          <mat-label>选择技师</mat-label>
+          <mat-select formControlName="staff" required>
+            <mat-option *ngFor="let staff of crew | available | keyvalue" [value]="staff.key">
+              No.{{staff.value.crew_number}} {{staff.value.name}}
+            </mat-option>
+          </mat-select>
+          <!-- <input matInput placeholder="技师工号" name="crew_number" formControlName="crew_number" [readonly]="!isInsert"> -->
+        </mat-form-field>
+      </p>
+      
+    </mat-dialog-content>
+  
+    <mat-dialog-actions>
+        <button mat-raised-button color="primary"(click)="Order()">确认</button>
+        <button mat-raised-button (click)="close()">取消</button>
+    </mat-dialog-actions>
+    
+</ng-template>
+<div class="container">
+    <div class="card room" *ngFor="let room of rooms">
+        <div class="card-body btn" 
+            [ngClass]=" room.queue.length / room.bed_count < 0.6 ? 'btn-outline-success' :
+             ( room.queue.length === room.bed_count ? 'btn-outline-danger' : 'btn-outline-warning')">
+          <h3 class="card-title">{{room.name}}</h3>
+
+          <p class="card-text" *ngIf="room.queue.length === room.bed_count; else bedsInfo">
+              当前满房, 下一空闲时间: <br> {{nextAvailableTime(room)}}
+          </p>
+          <ng-template #bedsInfo> <p class="card-text"> 已用床位: {{room.queue.length}} / {{room.bed_count}} </p></ng-template>
+          <button mat-raised-button [disabled]="room.queue.length === room.bed_count" (click)="openServeDialog(room)">上钟</button>
+        </div>
+    </div>
+</div>

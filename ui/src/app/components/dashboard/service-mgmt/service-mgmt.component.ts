@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, TemplateRef  } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
+import { Service } from '../../models';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
@@ -136,11 +137,4 @@ export class ServiceMgmtComponent implements OnInit {
   private openDialog(dialogData: DialogData): void {
     this.dialog = this.dialogFactoryService.open(dialogData);
   }
-}
-
-export interface Service {
-  id: Number;
-  name: String;
-  duration: number;
-  price: number;
 }

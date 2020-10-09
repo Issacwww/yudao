@@ -1,10 +1,11 @@
 import { Component, OnInit,ViewChild, TemplateRef  } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
+import { Room } from '../../models';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
-import { DialogService, DialogFactoryService, DialogData } from '../../../modules/dialog';
-import { RequestService } from '../../../services';
+import { DialogService, DialogFactoryService, DialogData } from 'src/app/modules/dialog';
+import { RequestService } from 'src/app/services';
 
 @Component({
   selector: 'app-rooms',
@@ -113,8 +114,3 @@ export class RoomMgmtComponent implements OnInit {
 
 }
 
-export interface Room{
-  id: number;
-  name: string;
-  bed_count: number;
-}

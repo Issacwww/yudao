@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, TemplateRef  } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
+import { Spending } from '../../../models';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
@@ -82,13 +83,5 @@ export class SpendingComponent implements OnInit {
   private openDialog(dialogData: DialogData): void {
     this.dialog = this.dialogFactoryService.open(dialogData);
   }
-}
-
-export interface Spending{
-  id: number;
-  spending_type: String;
-  detail: String;
-  amount: number;
-  spend_date: Date;
 }
 

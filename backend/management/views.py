@@ -58,11 +58,33 @@ class RoomInfoModelViewSet(ModelViewSet):
     queryset = RoomInfo.objects.all()
 
 
-class TopUpInfoModelGetViewSet(ModelViewSet):
-    serializer_class = TopUpInfoGetSerializer
+class TopUpInfoModelViewSet(ModelViewSet):
+    serializer_class = TopUpInfoSerializer
     queryset = TopUpInfo.objects.all()
 
 
-class TopUpInfoModelPostViewSet(ModelViewSet):
-    serializer_class = TopUpInfoPostSerializer
-    queryset = TopUpInfo.objects.all()
+class CustomerOrderModelViewSet(ModelViewSet):
+    serializers_class = CustomerOrderSerializer
+    queryset = CustomerOrder.objects.all()
+
+    def create(self, request, *args, **kwargs):
+        data = request.data
+        is_member_order = data['isMemberOrder']
+        data.remove('isMemberOrder')
+        print(data)
+        if is_member_order:
+            member = MemberInfo.objects.filter(card_number=data['member_info'])
+            if member.balance < data['price']:
+                return Response({"message": "余额不足, 请充值"}, status=status.HTTP_400_BAD_REQUEST)
+            # update member
+            member.balance -= data['price']
+            saved_member = MemberInfoModelSerializer(data=member)
+            saved_member.is_valid(raise_exception=True)
+            saved_member.save()
+            data['member_info'] += f' {member.name}'
+        else:
+            data.remove('member_info')
+        instance = CustomerOrderSerializer(data=data)
+        instance.is_valid(raise_exception=True)
+        instance.save()
+        return Response(instance.data, status=status.HTTP_200_OK)

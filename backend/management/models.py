@@ -1,8 +1,6 @@
 from django.db import models
 
 
-# Create your models here.
-
 class StoreInfo(models.Model):
     store_name = models.CharField(max_length=20, verbose_name='店名', unique=True)
     address = models.TextField(verbose_name='门店地址', unique=True)
@@ -136,4 +134,18 @@ class TopUpInfo(models.Model):
     class Meta:
         db_table = 'topup'
         verbose_name = '充值记录'
+        verbose_name_plural = verbose_name
+
+
+class CustomerOrder(models.Model):
+    staff = models.ForeignKey(CrewInfo, on_delete=models.CASCADE)
+    room = models.ForeignKey(RoomInfo, on_delete=models.CASCADE)
+    service = models.ForeignKey(ServiceInfo, on_delete=models.CASCADE)
+    member_info = models.CharField(max_length=20, verbose_name="会员信息", null=True)
+    bedNo = models.IntegerField(default=0, verbose_name="床位号")
+    consumption = models.IntegerField(default=0, verbose_name="消费金额")
+
+    class Meta:
+        db_table = 'customerOrder'
+        verbose_name = '普通顾客消费'
         verbose_name_plural = verbose_name

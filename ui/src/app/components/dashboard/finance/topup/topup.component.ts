@@ -3,7 +3,7 @@ import { RequestService } from 'src/app/services';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
-
+import { TopUpRecord } from '../../../models';
 @Component({
   selector: 'app-topup',
   templateUrl: './topup.component.html',
@@ -33,11 +33,4 @@ export class TopupComponent implements OnInit {
       this.topUpRecords.paginator = this.paginator;
     })
   }
-}
-
-export interface TopUpRecord{
-  id:number;
-  member:string;
-  topup_date:Date;
-  amount:number;
 }
