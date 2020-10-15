@@ -150,7 +150,7 @@ export class MemberMgmtComponent implements OnInit {
     if(this.mode){
       //insert
       let newMember = this.form.value;
-      newMember['open_date'] = this.date.today();
+      newMember['open_date'] = this.date.today(false);
       this.req.basePost(this.enterPoint,newMember).subscribe(res=>{
         this.req.basePost(this.topUpEnterPoint,{
           member: res.id,
@@ -184,7 +184,7 @@ export class MemberMgmtComponent implements OnInit {
         this.req.basePost(this.topUpEnterPoint,{
           member: this.operateMember.id,
           amount: +this.topUpAmount,
-          topup_date: this.date.today()
+          topup_date: this.date.today(false)
         }).subscribe((data)=>{
           this.ngOnInit();
         })

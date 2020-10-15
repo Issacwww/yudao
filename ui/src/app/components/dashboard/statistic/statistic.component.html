@@ -1,1 +1,23 @@
-<p>statistic works!</p>
+<div class="main container table-responsive"> 
+    <br>
+    <nav mat-tab-nav-bar>
+        <a mat-tab-link *ngFor="let link of links; let i = index"
+        (click)="changeTab(i)"
+        [active]="activeLink == link"> {{link}} </a>
+    </nav>
+    <br>
+    <mat-toolbar>
+        <span class="count">请选择起止日期</span>
+        <mat-form-field id="datepicker">
+            <mat-date-range-input [rangePicker]="picker">
+              <input matStartDate [(ngModel)]="start">
+              <input matEndDate [(ngModel)]="end">
+            </mat-date-range-input>
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-date-range-picker #picker></mat-date-range-picker>
+        </mat-form-field>
+        <span class="spacer"></span>
+        <button mat-raised-button color="primary" type="button" >确定</button>
+        
+    </mat-toolbar>
+</div>

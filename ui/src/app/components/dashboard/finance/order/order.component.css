@@ -1,0 +1,21 @@
+:host {            
+    width: 80%;  
+}
+.mat-form-field{
+    display: block;
+}
+.mat-dialog-actions {
+    display: inline-block;
+    justify-content: flex-end;
+    margin: 0;
+}
+.table td{
+    vertical-align: middle;
+}
+.mat-tab-link a{
+    TEXT-DECORATION:none
+}
+a{
+    font-size: medium;
+    text-decoration: none;
+}

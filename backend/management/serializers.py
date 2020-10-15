@@ -104,8 +104,9 @@ class TopUpInfoSerializer(serializers.ModelSerializer):
 class CustomerOrderSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
-        rep = super(CustomerOrder, self).to_representation(instance)
-        rep['staff'] = f'No.{instance.staff.card_number} {instance.staff.name}'
+        rep = super().to_representation(instance)
+        rep['staff'] = f'No.{instance.staff.crew_number} {instance.staff.name}'
+        rep['bedNo'] = str(rep['bedNo']) + '号床'
         rep['room'] = instance.room.name
         rep['service'] = instance.service.name
         return rep

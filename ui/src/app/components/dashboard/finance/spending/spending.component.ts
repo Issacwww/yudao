@@ -71,7 +71,7 @@ export class SpendingComponent implements OnInit {
 
   save(){
     let newRecord = this.form.value;
-    newRecord['spend_date'] = this.date.today();
+    newRecord['spend_date'] = this.date.today(false);
     this.req.basePost(this.enterPoint,newRecord).subscribe((res)=>this.ngOnInit());
     this.close();
   }

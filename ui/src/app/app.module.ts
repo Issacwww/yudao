@@ -7,7 +7,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from './material-module';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { LoginModule, DialogModule } from './modules';
-
+import { MAT_DATE_LOCALE} from '@angular/material/core';
 // Components
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -47,7 +47,9 @@ import { RequestService,StorageService,DateService,FilterService,getChinesePagin
     MaterialModule
   ],
   providers: [RequestService, StorageService, DateService, FilterService,
-    { provide: MatPaginatorIntl, useValue: getChinesePaginatorIntl() }
+    { provide: MatPaginatorIntl, useValue: getChinesePaginatorIntl() },
+    {provide: MAT_DATE_LOCALE, useValue: 'zh-CN'},
+
   ],
   bootstrap: [AppComponent]
 })

@@ -1,1 +1,55 @@
-<p>order works!</p>
+<mat-toolbar>
+    <span class="count">当前共有{{orderCount}}订单记录</span>
+    <span class="spacer"></span>
+  </mat-toolbar >
+  <nav mat-tab-nav-bar backgroundColor="primary">
+    <a mat-tab-link *ngFor="let link of links; let i = index"
+       (click)="changeTab(i)"
+       [active]="activeLink == link"> {{link}} </a>
+  </nav>
+  <mat-table #table matSort [dataSource]="dataSource">
+    
+    <ng-container matColumnDef="id">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> 订单编号 </mat-header-cell>
+      <mat-cell *matCellDef="let element">{{element.id}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="service">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> 服务项目 </mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.service}}</mat-cell>
+      </ng-container>
+
+    <ng-container matColumnDef="staff">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> 上钟技师 </mat-header-cell>
+      <mat-cell *matCellDef="let element">{{element.staff}}</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="room">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> 客房信息 </mat-header-cell>
+      <mat-cell *matCellDef="let element">{{element.room}} {{element.bedNo}}</mat-cell>
+    </ng-container>
+  
+    <ng-container matColumnDef="order_date">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> 订单时间 </mat-header-cell>
+      <mat-cell *matCellDef="let element">{{element.order_date}} {{element.order_time}}</mat-cell>
+    </ng-container>
+  
+    <ng-container matColumnDef="consumption">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> 消费金额 </mat-header-cell>
+      <mat-cell *matCellDef="let element">{{element.consumption}} 元</mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="member_info">
+        <mat-header-cell *matHeaderCellDef mat-sort-header> 会员信息 </mat-header-cell>
+        <mat-cell *matCellDef="let element">{{element.member_info}}</mat-cell>
+      </ng-container>
+    
+  
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"
+            matRipple 
+            class="element-row">
+    </mat-row>
+  </mat-table>
+  <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+  

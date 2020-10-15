@@ -23,7 +23,7 @@ export class ServeComponent implements OnInit {
   // crew: Crew[] = [];
   crew = new Map<number, Crew>();
   selectedRoom;
-  compareDate = function(a, b) { return a - b; };
+  compareDate = function(a, b) { return a[0] - b[0]; };
   get isMemberOrder(){return this.form.value.isMemberOrder};
   dialog: DialogService;
   @ViewChild('serveTemplate')
@@ -64,47 +64,49 @@ export class ServeComponent implements OnInit {
       if(tmpRoomDate){
         for(let i = 0; i < this.rooms.length; i ++){
           let initValues = (tmpRoomDate[i] && tmpRoomDate[i].length > 0) ? tmpRoomDate[i] : [];
-          this.rooms[i].queue = new PriorityQueue<Date>({
+          this.rooms[i].queue = new PriorityQueue<[Date,number]>({
             comparator: this.compareDate,
             initialValues: initValues});
         }
       }
       else{
         this.rooms.forEach(room=>{
-          room.queue  =new PriorityQueue<Date>({comparator: this.compareDate});
+          room.queue  =new PriorityQueue<[Date,number]>({comparator: this.compareDate});
         })
       }
     });
 
     let tmpCrew = this.storage.getMap('serve_crew');
+    let tmpCrewMap = new Map<number, Boolean>();
     if(tmpCrew){
       tmpCrew.forEach(tmpStaff=>{
-        this.crew.set(tmpStaff['id'], tmpStaff as Crew);
-      })
-    }else{
-      this.req.baseGet(this.crewEnterPoint).subscribe(crewList =>{
-        crewList.forEach(staff => {
-          staff['inServe'] = false;
-          this.crew.set(staff.id, staff);
-        });
-        this.storage.setMap('serve_crew', this.crew);
+        tmpCrewMap.set(tmpStaff['id'], (tmpStaff as Crew).inServe);
       })
     }
+    this.req.baseGet(this.crewEnterPoint).subscribe(crewList =>{
+      crewList.forEach(staff => {
+        staff['inServe'] = tmpCrewMap.get(staff['id']) ? tmpCrewMap.get(staff['id']) : false;
+        this.crew.set(staff.id, staff);
+      });
+      this.storage.setMap('serve_crew', this.crew);
+    })
+    
     
     setInterval(()=>{
       let now = new Date();
       let roomsQueueData = [];
       this.rooms.forEach(room => {
           while(room.queue.length > 0 && 
-            (new Date(room.queue.peek()).getTime() <=now.getTime())){
+            (new Date(room.queue.peek()[0]).getTime() <=now.getTime())){
               console.log('rm');
-              room.queue.dequeue();
+              let peek = room.queue.dequeue();
+              this.crew.get(peek[1]).inServe = false;
           };
           roomsQueueData.push(room.queue.values());
-          
       });
+      this.storage.setMap('serve_crew', this.crew);
       this.storage.set('serve_rooms',roomsQueueData);
-    },1000);
+    },1000*10);
   }
 
   Order(){
@@ -113,13 +115,15 @@ export class ServeComponent implements OnInit {
     let serviceId = parseInt(this.form.value.service);
     let selectedService = this.getServiceById(serviceId);
     let selectedStaff = this.getStaffById(this.form.value.staff);
-    
+    let order_date_time = this.date.today(true)
     let postData = {
       isMemberOrder: this.isMemberOrder,
       staff: this.form.value.staff,
       service: serviceId, 
       room: this.selectedRoom.id,
       bedNo: this.selectedRoom.queue.length + 1,
+      order_date: order_date_time[0],
+      order_time: order_date_time[1],
       consumption: +selectedService.price
     }
     
@@ -134,14 +138,14 @@ export class ServeComponent implements OnInit {
         this.storage.setMap('serve_crew', this.crew);
 
         let nextAvailableTime = this.date.minsAfterMoment(new Date(), selectedService.duration);
-        this.selectedRoom.queue.queue(nextAvailableTime);
+        this.selectedRoom.queue.queue([nextAvailableTime,selectedStaff.id]);
         
         let roomQueueData = [];
         this.rooms.forEach(room=>{roomQueueData.push(room.queue.values())});
         this.storage.set('serve_rooms',roomQueueData);
-        let message = this.isMemberOrder ? `会员:${res.member_info}<br>` : ''
-                    + `技师: ${selectedStaff.name}<br>`
-                    + `房间: ${this.selectedRoom.name}, 床位号: ${this.selectedRoom.queue.length}`
+        let message = this.isMemberOrder ? `会员:${res.member_info}\n` : '';
+        message +=  `技师: ${selectedStaff.name}\n`
+                    + `房间: ${this.selectedRoom.name}, 床位号: ${this.selectedRoom.queue.length}\n`
                     + `预计结束时间: ${nextAvailableTime}`
         this.changeDialog("订单信息", message);
       },

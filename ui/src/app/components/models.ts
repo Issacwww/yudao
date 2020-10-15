@@ -48,3 +48,15 @@ export interface Room{
     bed_count: number;
     queue: any;
 }  
+
+export interface Order{
+  id: number;
+  service: string;
+  staff:string;
+  room: string;
+  bedNo: number;
+  order_date: Date;
+  order_time: string;
+  consumption: number;
+  member_info: string;
+}

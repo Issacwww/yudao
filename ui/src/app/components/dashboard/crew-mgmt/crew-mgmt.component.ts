@@ -128,7 +128,7 @@ export class CrewMgmtComponent implements OnInit {
     if(this.isInsert){
       //insert
       let newStaff = this.form.value;
-      newStaff['hire_date'] = this.date.today();
+      newStaff['hire_date'] = this.date.today(false);
       this.req.basePost(this.enterPoint,newStaff).subscribe((res)=>this.ngOnInit())
     }else{
       //patch

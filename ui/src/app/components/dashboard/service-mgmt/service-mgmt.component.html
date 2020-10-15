@@ -55,12 +55,12 @@
       
         <ng-container matColumnDef="duration">
           <mat-header-cell *matHeaderCellDef mat-sort-header>项目时常</mat-header-cell>
-          <mat-cell *matCellDef="let element">{{element.duration}}</mat-cell>
+          <mat-cell *matCellDef="let element">{{element.duration}} 分钟</mat-cell>
         </ng-container>
       
         <ng-container matColumnDef="price">
           <mat-header-cell *matHeaderCellDef mat-sort-header>项目价格</mat-header-cell>
-          <mat-cell *matCellDef="let element">{{element.price}}</mat-cell>
+          <mat-cell *matCellDef="let element">{{element.price}} 元</mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="operation">

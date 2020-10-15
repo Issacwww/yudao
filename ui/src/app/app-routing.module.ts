@@ -26,7 +26,7 @@ const routes: Routes = [
       {path: 'serve', component: ServeComponent},
       {path: 'rooms', component: RoomMgmtComponent},
       {path: 'statistic', component: StatisticComponent},
-      {path : '**', redirectTo:'dashboard'}
+      {path : '**', redirectTo:'serve'}
     ]
   },
 ];
