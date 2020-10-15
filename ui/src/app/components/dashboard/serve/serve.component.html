@@ -8,41 +8,58 @@
 </ng-template>
 
 <ng-template #serveTemplate>
+    <mat-form-field >
+      <mat-label>选择订单类型</mat-label>
+      <mat-select [(ngModel)]="selectedOrderType" required>
+        <mat-option *ngFor="let type of orderTypes | keyvalue" [value]="type.key">
+          {{type.value}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
     <mat-dialog-content [formGroup]="form">
-      <p>
-        <mat-checkbox name="isMemberOrder" formControlName="isMemberOrder">会员客户</mat-checkbox>
-        <span class="spacer"></span>
-        <mat-form-field>
-          <mat-label>会员卡号</mat-label>
-          <input matInput placeholder="会员卡号" name="card_number" formControlName="card_number" >
-        </mat-form-field>
+      <p [hidden]="selectedOrderType!=2">
+          <mat-form-field >
+            <mat-label>会员卡号</mat-label>
+            <input matInput placeholder="会员卡号" name="card_number" formControlName="card_number" >
+          </mat-form-field>
       </p>
      
       
       <p>
-        <mat-form-field>
+        <mat-form-field >
           <mat-label>选择服务项目</mat-label>
           <mat-select formControlName="service" required>
             <mat-option *ngFor="let service of services | keyvalue" [value]="service.key">
               {{service.value.name}}
             </mat-option>
           </mat-select>
-          <!-- <input matInput placeholder="联系方式" name="phone" formControlName="phone"> -->
         </mat-form-field>
       </p>
       <p>
-        <mat-form-field>
+        <mat-form-field >
           <mat-label>选择技师</mat-label>
           <mat-select formControlName="staff" required>
             <mat-option *ngFor="let staff of crew | available | keyvalue" [value]="staff.key">
               No.{{staff.value.crew_number}} {{staff.value.name}}
             </mat-option>
           </mat-select>
-          <!-- <input matInput placeholder="技师工号" name="crew_number" formControlName="crew_number" [readonly]="!isInsert"> -->
         </mat-form-field>
       </p>
       
+      <p [hidden]="selectedOrderType!=3">
+        <mat-form-field  >
+          <mat-label>线上消费渠道</mat-label>
+          <input matInput placeholder="线上消费渠道" name="order_source" formControlName="order_source" >
+        </mat-form-field>
+      </p>
+      <p [hidden]="selectedOrderType!=3">
+        <mat-form-field >
+          <mat-label>消费金额</mat-label>
+          <input matInput placeholder="消费金额" name="order_consumption" formControlName="order_consumption" >
+        </mat-form-field>
+      </p>
     </mat-dialog-content>
+
   
     <mat-dialog-actions>
         <button mat-raised-button color="primary"(click)="Order()">确认</button>

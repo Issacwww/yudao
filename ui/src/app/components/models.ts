@@ -57,6 +57,7 @@ export interface Order{
   bedNo: number;
   order_date: Date;
   order_time: string;
+  order_source: string;
   consumption: number;
   member_info: string;
 }

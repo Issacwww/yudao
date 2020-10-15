@@ -1,6 +1,7 @@
 from rest_framework import status
+from rest_framework.decorators import api_view
 from rest_framework.views import APIView
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from rest_framework.response import Response
 from .serializers import *
 
@@ -69,8 +70,8 @@ class CustomerOrderModelViewSet(ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         data = request.data
-        is_member_order = data['isMemberOrder']
-        del data['isMemberOrder']
+        is_member_order = data['order_type'] == 2
+        del data['order_type']
         if is_member_order:
             member = MemberInfo.objects.filter(card_number=data['member_info'])[0]
             if member.balance < data['consumption']:
@@ -82,3 +83,40 @@ class CustomerOrderModelViewSet(ModelViewSet):
         instance.is_valid(raise_exception=True)
         instance.save()
         return Response(instance.data, status=status.HTTP_201_CREATED)
+
+    def list(self, request, *args, **kwargs):
+        member_orders, non_member_orders, online_orders = [], [], []
+        for order in self.queryset:
+            if order.member_info:
+                member_orders.append(order)
+            elif order.order_source == '线下':
+                non_member_orders.append(order)
+            else:
+                online_orders.append(order)
+        member_orders = self.get_serializer(member_orders, many=True)
+        non_member_orders = self.get_serializer(non_member_orders, many=True)
+        online_orders = self.get_serializer(online_orders, many=True)
+        return Response({'member_orders': member_orders.data,
+                         'non_member_orders': non_member_orders.data,
+                         'online_orders': online_orders.data}, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+def statistic_all(request):
+    """
+    :param request:
+    :return: income(customer / member) & spending
+    """
+    data = request.data
+    start, end = data['start'], data['end']
+    queryset = CustomerOrder.objects.filter(order_date__range=(start, end))
+
+
+@api_view(['GET'])
+def statistic_crew(request):
+    pass
+
+
+@api_view(['GET'])
+def statistic_crew_detail(request, pk):
+    pass

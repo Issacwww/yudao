@@ -44,6 +44,10 @@
         <mat-cell *matCellDef="let element">{{element.member_info}}</mat-cell>
       </ng-container>
     
+    <ng-container matColumnDef="order_source">
+      <mat-header-cell *matHeaderCellDef mat-sort-header> 消费渠道 </mat-header-cell>
+      <mat-cell *matCellDef="let element">{{element.order_source}}</mat-cell>
+    </ng-container>
   
     <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
     <mat-row *matRowDef="let row; columns: displayedColumns;"

@@ -16,15 +16,20 @@ export class ServeComponent implements OnInit {
   private roomEnterPoint = 'rooms/';
   private serviceEnterPoint = 'services/'
   private crewEnterPoint = 'crew/';
-  private orderEnterPoint = 'orders/'
+  private orderEnterPoint = 'orders/';
+  private selectedRoom;
+
+  orderTypes = {
+    1:'普通订单',2:'会员订单',3:'线上订单'
+  }
+  selectedOrderType = 1;
   rooms: Room[] = [];
-  // services: Service[] = [];
   services = new Map<number, Service>();
-  // crew: Crew[] = [];
   crew = new Map<number, Crew>();
-  selectedRoom;
+  
+
   compareDate = function(a, b) { return a[0] - b[0]; };
-  get isMemberOrder(){return this.form.value.isMemberOrder};
+  
   dialog: DialogService;
   @ViewChild('serveTemplate')
   serveTemplate: TemplateRef<any>;
@@ -115,9 +120,10 @@ export class ServeComponent implements OnInit {
     let serviceId = parseInt(this.form.value.service);
     let selectedService = this.getServiceById(serviceId);
     let selectedStaff = this.getStaffById(this.form.value.staff);
-    let order_date_time = this.date.today(true)
+    let order_date_time = this.date.today(true);
+    let message = "";
     let postData = {
-      isMemberOrder: this.isMemberOrder,
+      order_type:this.selectedOrderType,
       staff: this.form.value.staff,
       service: serviceId, 
       room: this.selectedRoom.id,
@@ -126,12 +132,14 @@ export class ServeComponent implements OnInit {
       order_time: order_date_time[1],
       consumption: +selectedService.price
     }
-    
-    if(this.isMemberOrder){
-      console.log('member order');
+    if(this.selectedOrderType == 2){
       postData['member_info']=this.form.value.card_number;
+
+    }else if(this.selectedOrderType == 3){
+      postData['order_source']=this.form.value.order_source;
+      postData.consumption = this.form.value.order_consumption;
     }
-    console.log(postData);
+    
     this.req.basePost(this.orderEnterPoint,postData).subscribe(
       res=>{
         selectedStaff.inServe = true;
@@ -143,11 +151,11 @@ export class ServeComponent implements OnInit {
         let roomQueueData = [];
         this.rooms.forEach(room=>{roomQueueData.push(room.queue.values())});
         this.storage.set('serve_rooms',roomQueueData);
-        let message = this.isMemberOrder ? `会员:${res.member_info}\n` : '';
+        message += this.selectedOrderType === 2 ? `会员:${res.member_info}\n` : '';
         message +=  `技师: ${selectedStaff.name}\n`
                     + `房间: ${this.selectedRoom.name}, 床位号: ${this.selectedRoom.queue.length}\n`
                     + `预计结束时间: ${nextAvailableTime}`
-        this.changeDialog("订单信息", message);
+        this.changeDialog(this.orderTypes[this.selectedOrderType], message);
       },
       error=>{
         this.changeDialog("警告",error.message);
@@ -155,28 +163,22 @@ export class ServeComponent implements OnInit {
   }
   
   initFormValues(){
-    let memberSwitch = this.formBuilder.control(false);
-    let card_number_input = this.formBuilder.control({value:'', disabled: !memberSwitch.value});
     this.form = this.formBuilder.group({
-      isMemberOrder: memberSwitch,
-      card_number: card_number_input,
+      card_number: [''],
       service: [''],
-      staff: ['']
-    });
-    memberSwitch.statusChanges.subscribe((newStatus) => {
-      if (memberSwitch.value == true) {
-        card_number_input.enable();
-      } else {
-        card_number_input.disable();
-      }
+      staff: [''],
+      order_source:[''],
+      order_consumption: ['']
     });
   }
 
+  
   nextAvailableTime(room){
     return this.date.praseTimeToDisplay(room.queue.peek());
   }
 
   openServeDialog(room){
+    this.selectedOrderType = 1;
     this.form.reset();
     this.selectedRoom = room;
     this.openDialog({

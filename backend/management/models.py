@@ -144,10 +144,11 @@ class CustomerOrder(models.Model):
     member_info = models.CharField(max_length=20, verbose_name="会员信息", null=True)
     bedNo = models.IntegerField(default=0, verbose_name="床位号")
     order_date = models.DateField(verbose_name="订单日期")
-    order_time = models.CharField(max_length=10, default="上午12:00", verbose_name="具体时间")
+    order_time = models.CharField(max_length=10, default="12:00", verbose_name="具体时间")
+    order_source = models.CharField(max_length=10, default="线下", verbose_name="消费类型")
     consumption = models.IntegerField(default=0, verbose_name="消费金额")
 
     class Meta:
         db_table = 'customerOrder'
-        verbose_name = '普通顾客消费'
+        verbose_name = '顾客消费'
         verbose_name_plural = verbose_name
