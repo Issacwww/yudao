@@ -13,6 +13,11 @@ export class RequestService {
     return this.http.get(this.baseAPI + path);
   }
 
+  getWithBody(path, data): Observable<any>{
+    data['responseType'] = 'json';
+    return this.http.get(this.baseAPI + path, data);
+  }
+
   basePost(path, data): Observable<any>{
     data['responseType'] = 'json';
     return this.http.post(this.baseAPI + path, data);

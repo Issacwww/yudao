@@ -8,6 +8,8 @@ import { MaterialModule } from './material-module';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { LoginModule, DialogModule } from './modules';
 import { MAT_DATE_LOCALE} from '@angular/material/core';
+import { ChartsModule } from 'ng2-charts';
+
 // Components
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -44,7 +46,8 @@ import { RequestService,StorageService,DateService,FilterService,getChinesePagin
     ReactiveFormsModule,
     HttpClientModule,
     BrowserAnimationsModule,
-    MaterialModule
+    MaterialModule,
+    ChartsModule
   ],
   providers: [RequestService, StorageService, DateService, FilterService,
     { provide: MatPaginatorIntl, useValue: getChinesePaginatorIntl() },

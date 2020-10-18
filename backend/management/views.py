@@ -4,6 +4,8 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
 from rest_framework.response import Response
 from .serializers import *
+from django.db.models import Count, Sum
+from datetime import date
 
 
 class StoreInfoModelViewSet(ModelViewSet):
@@ -85,14 +87,9 @@ class CustomerOrderModelViewSet(ModelViewSet):
         return Response(instance.data, status=status.HTTP_201_CREATED)
 
     def list(self, request, *args, **kwargs):
-        member_orders, non_member_orders, online_orders = [], [], []
-        for order in self.queryset:
-            if order.member_info:
-                member_orders.append(order)
-            elif order.order_source == '线下':
-                non_member_orders.append(order)
-            else:
-                online_orders.append(order)
+        member_orders = self.queryset.filter(member_info__isnull=False, order_source__startswith="线下")
+        non_member_orders = self.queryset.filter(member_info__isnull=True, order_source__startswith="线下")
+        online_orders = self.queryset.filter(member_info__isnull=True, order_source__startswith="线上")
         member_orders = self.get_serializer(member_orders, many=True)
         non_member_orders = self.get_serializer(non_member_orders, many=True)
         online_orders = self.get_serializer(online_orders, many=True)
@@ -108,8 +105,62 @@ def statistic_all(request):
     :return: income(customer / member) & spending
     """
     data = request.data
-    start, end = data['start'], data['end']
-    queryset = CustomerOrder.objects.filter(order_date__range=(start, end))
+    start = data['start'] if 'start' in data else date.today().replace(day=1)
+    end = data['end'] if 'end' in data else date.today()
+
+    member_orders = CustomerOrder.objects.filter(order_date__range=(start, end),
+                                                 member_info__isnull=False,
+                                                 order_source__startswith="线下")
+    member_orders_total = member_orders.aggregate(member_orders_total=Sum('consumption'))['member_orders_total']
+    member_orders = CustomerOrderSerializer(member_orders, many=True)
+
+    non_member_orders = CustomerOrder.objects.filter(order_date__range=(start, end),
+                                                     member_info__isnull=True,
+                                                     order_source__startswith="线下")
+    non_member_orders_total = non_member_orders.aggregate(
+        non_member_orders_total=Sum('consumption'))['non_member_orders_total']
+    non_member_orders = CustomerOrderSerializer(non_member_orders, many=True)
+
+    online_orders = CustomerOrder.objects.filter(order_date__range=(start, end),
+                                                 member_info__isnull=True,
+                                                 order_source__startswith="线上")
+    online_orders_total = online_orders.aggregate(online_orders_total=Sum('consumption'))['online_orders_total']
+    online_orders = CustomerOrderSerializer(online_orders, many=True)
+
+    expense = SpendingInfo.objects.filter(spend_date__range=(start, end))
+    expense_total = expense.aggregate(expense_total=Sum('amount'))['expense_total']
+    expense = SpendingInfoModelSerializer(expense, many=True)
+
+    return Response({
+        'member_orders': {
+            'orders': member_orders.data,
+            'counts': len(member_orders.data),
+            'total': member_orders_total,
+            'label': '会员消费'
+        },
+        'non_member_orders': {
+            'orders': non_member_orders.data,
+            'counts': len(non_member_orders.data),
+            'total': non_member_orders_total,
+            'label': '非会员消费'
+        },
+        'online_orders': {
+            'orders': online_orders.data,
+            'counts': len(online_orders.data),
+            'total': online_orders_total,
+            'label': '线上消费'
+        },
+        'expense': {
+            'spending': expense.data,
+            'counts': len(expense.data),
+            'total': expense_total,
+            'label': '日常开支'
+        },
+        'turnover': {
+            'total': member_orders_total + non_member_orders_total + online_orders_total,
+            'label': '营业总额'
+        }
+    }, status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])

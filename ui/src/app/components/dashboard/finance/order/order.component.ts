@@ -14,7 +14,7 @@ export class OrderComponent implements OnInit {
 
   enterPoint='orders'
   isMemberOrder=false;
-  links=['会员订单','非会员订单','线上订单','当日统计'];
+  links=['会员订单','非会员订单','线上订单'];
   activeLink = this.links[0];
   memberOrders = [];
   nonMemberOrders = [];

@@ -136,7 +136,7 @@ export class ServeComponent implements OnInit {
       postData['member_info']=this.form.value.card_number;
 
     }else if(this.selectedOrderType == 3){
-      postData['order_source']=this.form.value.order_source;
+      postData['order_source']="线上 - "+this.form.value.order_source;
       postData.consumption = this.form.value.order_consumption;
     }
     

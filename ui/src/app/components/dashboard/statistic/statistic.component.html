@@ -17,9 +17,30 @@
             <mat-date-range-picker #picker></mat-date-range-picker>
         </mat-form-field>
         <span class="spacer"></span>
-        <button mat-raised-button color="primary" type="button" >确定</button>
+        <button mat-raised-button color="primary" type="button" (click)="getDateByDate()">确定</button>
         
     </mat-toolbar>
     
     <br>
+
+    <div class="chart-wrapper">
+        <canvas baseChart 
+        [datasets]="barChartData"
+        [labels]="barChartLabels"
+        [options]="barChartOptions"
+        [plugins]="barChartPlugins"
+        [legend]="barChartLegend"
+        [chartType]="barChartType">
+      </canvas>
+    </div>
+
+    <div class="chart-wrapper">
+        <canvas baseChart 
+        [options]="doughnutChartOptions"
+        [data]="doughnutChartData"
+        [labels]="doughnutChartLabels"
+        [plugins]="doughnutChartPlugins"
+        [chartType]="doughnutChartType">
+      </canvas>
+    </div>
 </div>
