@@ -38,3 +38,7 @@
   .toolbar img {
     margin: 0 16px;
   }
+  a{
+    font-size: medium;
+    text-decoration: none;
+}

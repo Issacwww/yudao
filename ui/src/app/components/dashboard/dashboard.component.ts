@@ -1,5 +1,6 @@
 import { Component, OnInit} from '@angular/core';
-import { Router} from '@angular/router';
+import { Router } from '@angular/router';
+import { StorageService } from 'src/app/services';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
@@ -42,7 +43,7 @@ export class DashboardComponent implements OnInit {
     }
   ]
 
-  constructor(public router: Router) { }
+  constructor(private storage: StorageService, private router: Router) { }
 
   ngOnInit(): void {
     let path = "/"+this.router.url.split('/')[2];
@@ -58,5 +59,10 @@ export class DashboardComponent implements OnInit {
   changeTab(idx: number){
     this.selectedItem = idx;
     this.router.navigateByUrl('dashboard'+this.navItems[idx].path)
+  }
+
+  logOut(){
+    this.storage.clear();
+    this.router.navigateByUrl('/');
   }
 }

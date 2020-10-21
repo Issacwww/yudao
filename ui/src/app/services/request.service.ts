@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RequestService {
   private baseAPI = 'http://localhost:8000/api/';
-  constructor(public http: HttpClient) { }
+  constructor(private http: HttpClient, private _authService: AuthService) { }
 
   baseGet(path): Observable<any>{
     return this.http.get(this.baseAPI + path);
@@ -35,5 +36,14 @@ export class RequestService {
 
   baseDelete(path, id): Observable<any>{
     return this.http.delete(this.baseAPI + path + id);
+  }
+
+  private getHttpOptions() {
+    return {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': 'JWT ' + this._authService.token
+      })
+    };
   }
 }

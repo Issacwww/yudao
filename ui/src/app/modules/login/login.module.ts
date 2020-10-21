@@ -25,9 +25,9 @@ import { LoginComponent, AdminComponent, StoreManagerComponent } from '.'
       {
         path:'login', component: LoginComponent,
         children:[
-          {path:'store-manager', component: StoreManagerComponent, data:{ label: '店长登录'}},
+          // {path:'store-manager', component: StoreManagerComponent, data:{ label: '店长登录'}},
           {path:'admin', component: AdminComponent, data:{label:'管理员登录'}},
-          {path : '**', redirectTo:'store-manager'}
+          {path : '**', redirectTo:'admin'}
         ]
       }
     ])

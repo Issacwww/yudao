@@ -4,6 +4,7 @@ import { DashboardComponent, MemberMgmtComponent,
          CrewMgmtComponent, ServiceMgmtComponent,FinanceComponent,
          ServeComponent, RoomMgmtComponent, StatisticComponent,
          TopupComponent, SpendingComponent, OrderComponent  } from './components';
+import { IsUserLoggedIn } from './services';
 
 const routes: Routes = [
   { path: '', pathMatch:'full', redirectTo: 'login'},
@@ -23,11 +24,13 @@ const routes: Routes = [
           {path : '**', redirectTo: 'order'}
         ]
       },
+      // {path:'stores',canActivate:[IsSuperAdmin]},
       {path: 'serve', component: ServeComponent},
       {path: 'rooms', component: RoomMgmtComponent},
       {path: 'statistic', component: StatisticComponent},
       {path : '**', redirectTo:'serve'}
-    ]
+    ],
+    canActivate: [IsUserLoggedIn]
   },
 ];
 

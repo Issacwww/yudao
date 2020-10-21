@@ -83,6 +83,7 @@ export class StoreManagerComponent implements OnInit {
         console.log(data);
         this.toggle(false, '');
         this.storage.set('token',data['token']);
+        this.storage.set('store',this.storeControl.value);
         this.router.navigateByUrl('/dashboard');
       },
       (error) => {

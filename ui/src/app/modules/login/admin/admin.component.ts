@@ -55,6 +55,7 @@ export class AdminComponent implements OnInit {
         console.log(data);
         this.toggle(false, '');
         this.storage.set('token',data['token']);
+        this.storage.set('store',0);
         this.router.navigateByUrl('/dashboard');
       },
       (error) => {

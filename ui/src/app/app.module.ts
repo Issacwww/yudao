@@ -19,7 +19,8 @@ import { DashboardComponent, MemberMgmtComponent,
   FinanceComponent, TopupComponent, SpendingComponent, OrderComponent } from './components';
 
 // Services
-import { RequestService,StorageService,DateService,FilterService,getChinesePaginatorIntl,AvailablePipe } from './services';
+import { RequestService, StorageService, DateService,AuthService, 
+         FilterService, getChinesePaginatorIntl, AvailablePipe, IsSuperAdmin, IsUserLoggedIn,  } from './services';
 
 @NgModule({
   declarations: [
@@ -49,9 +50,10 @@ import { RequestService,StorageService,DateService,FilterService,getChinesePagin
     MaterialModule,
     ChartsModule
   ],
-  providers: [RequestService, StorageService, DateService, FilterService,
+  providers: [RequestService, StorageService, DateService, 
+    FilterService, AuthService, IsSuperAdmin, IsUserLoggedIn, 
     { provide: MatPaginatorIntl, useValue: getChinesePaginatorIntl() },
-    {provide: MAT_DATE_LOCALE, useValue: 'zh-CN'},
+    { provide: MAT_DATE_LOCALE, useValue: 'zh-CN'}
 
   ],
   bootstrap: [AppComponent]
